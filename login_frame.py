@@ -26,7 +26,7 @@ def button_callback():
 frame = ctk.CTkFrame(master=app)
 frame.pack(pady=20, padx=60, fill="both", expand=True)
 
-username = ctk.CTkEntry(master=frame, placeholder_text="Username", )
+username = ctk.CTkEntry(master=frame, placeholder_text="Username")
 username.pack(pady=10, padx=10)
 
 password = ctk.CTkEntry(master=frame, placeholder_text="Password")
