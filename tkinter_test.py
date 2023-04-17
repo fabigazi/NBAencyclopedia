@@ -4,6 +4,9 @@ from tkinter import *
 from tkinter import messagebox
 from PIL import Image, ImageTk
 
+from window import Window
+from window_template import open_window
+
 
 def username_exists(cur, username):
     
@@ -40,8 +43,8 @@ def main_menu(cnx, cur, root):
     menu_label = Label(frame2, text = 'Main Menu', font = ('Arial Bold', 32))
     exit_btn = Button(frame2, text = 'Exit', font = ('Arial', 14), 
                         command = lambda : [wn.destroy(), root.deiconify()])
-    btn1 = Button(frame2, text = 'View / Search Players', font = ('Arial', 14), 
-                    command = lambda : print('ok') )
+    btn1 = Button(frame2, text = 'View / Search Players', font = ('Arial', 14),
+                  command = open(cnx, cur, root))
     btn2 = Button(frame2, text = 'View / Search Teams', font = ('Arial', 14), 
                     command = lambda : print('ok') )
     btn3 = Button(frame2, text = 'View / Search All Star Teams', font = ('Arial', 14), 
@@ -84,6 +87,9 @@ def login(cnx, cur, root, username, password):
             main_menu(cnx, cur, root)
 
     return
+
+def open(cnx, cur, root):
+    open_window(cnx, cur, root)
 
 def register_confirm(cur, window, first_name, last_name, username, password, password_confirm):
 
