@@ -3,8 +3,10 @@ import tkinter as tk
 from tkinter import *
 from tkinter import messagebox
 from PIL import Image, ImageTk
+import customtkinter as ctk
 
 
+from player_search_window import open_window
 
 
 def username_exists(cur, username):
@@ -40,27 +42,27 @@ def main_menu(cnx, cur, root):
 
     # Creating widgets
     menu_label = Label(frame2, text = 'Main Menu', font = ('Arial Bold', 32))
-    exit_btn = Button(frame2, text = 'Exit', font = ('Arial', 14), 
+    exit_btn = ctk.CTkButton(frame2, text = 'Exit', font = ('Arial', 14),
                         command = lambda : [wn.destroy(), root.deiconify()])
-    btn1 = Button(frame2, text = 'View / Search Players', font = ('Arial', 14),
-                  command = open(cnx, cur, root))
-    btn2 = Button(frame2, text = 'View / Search Teams', font = ('Arial', 14), 
+    btn1 = ctk.CTkButton(frame2, text = 'View / Search Players', font = ('Arial', 14),
+                  command = lambda: [open_window(cnx, cur, root)])
+    btn2 = ctk.CTkButton(frame2, text = 'View / Search Teams', font = ('Arial', 14),
                     command = lambda : print('ok') )
-    btn3 = Button(frame2, text = 'View / Search All Star Teams', font = ('Arial', 14), 
+    btn3 = ctk.CTkButton(frame2, text = 'View / Search All Star Teams', font = ('Arial', 14),
                     command = lambda : print('ok') )
-    btn4 = Button(frame2, text = 'View / Search Fantasy Teams', font = ('Arial', 14), 
+    btn4 = ctk.CTkButton(frame2, text = 'View / Search Fantasy Teams', font = ('Arial', 14),
                     command = lambda : print('ok') )
-    btn5 = Button(frame2, text = 'Create a Team', font = ('Arial', 14), 
+    btn5 = ctk.CTkButton(frame2, text = 'Create a Team', font = ('Arial', 14),
                     command = lambda : print('ok') )
         
     # Placing widgets on the screen
     menu_label.grid(row=1, column=0, columnspan=2, sticky='NEWS', pady=(20,30))
-    btn1.grid(row=2, column=0, columnspan=2,sticky='NEWS')
-    btn2.grid(row=3, column=0, columnspan=2, sticky='NEWS')
-    btn3.grid(row=4, column=0, columnspan=2, sticky='NEWS')
-    btn4.grid(row=5, column=0, columnspan=2, sticky='NEWS')
-    btn5.grid(row=6, column=0, columnspan=2, sticky='NEWS')
-    exit_btn.grid(row=7, column=0, columnspan=2, sticky='NEWS')
+    btn1.grid(row=2, column=0, columnspan=2,sticky='NEWS', padx=20, pady=(10, 10))
+    btn2.grid(row=3, column=0, columnspan=2, sticky='NEWS', padx=20, pady=(10, 10))
+    btn3.grid(row=4, column=0, columnspan=2, sticky='NEWS', padx=20, pady=(10, 10))
+    btn4.grid(row=5, column=0, columnspan=2, sticky='NEWS', padx=20, pady=(10, 10))
+    btn5.grid(row=6, column=0, columnspan=2, sticky='NEWS', padx=20, pady=(10, 10))
+    exit_btn.grid(row=7, column=0, columnspan=2, sticky='NEWS', padx=20, pady=(10, 10))
 
     frame2.pack(anchor = tk.CENTER)
 
@@ -172,7 +174,7 @@ def start_screen(cnx, cur, root):
                              command = lambda : [login(cnx, cur, root, username_entry.get(), password_entry.get())])
     register_button = tk.Button(frame, text = 'Register', font = ('Arial', 14), 
                                 command = lambda : [register(cur, root), cnx.commit()])
-    logo = ImageTk.PhotoImage(Image.open('../nba_logo.png'))
+    logo = ImageTk.PhotoImage(Image.open('nba_logo.png'))
     logo_label = tk.Label(frame, image=logo)
     logo_label.image = logo
 
