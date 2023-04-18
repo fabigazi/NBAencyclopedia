@@ -123,21 +123,21 @@ def register(cur, root):
     wn.geometry("%dx%d+%d+%d" % (window_width, window_height, x_coor, y_coor))
 
     # Creating widgets
-    create_account_label = Label(frame2, text = 'Create Your Account', font = ('Arial Bold', 20))
-    first_name_label = Label(frame2, text = 'First Name', font = ('Arial', 14))
-    first_name_entry = Entry(frame2)
-    last_name_label = Label(frame2, text = 'Last Name', font = ('Arial', 14))
-    last_name_entry = Entry(frame2)
-    username_label = Label(frame2, text = 'Username', font = ('Arial', 14))
-    username_entry = Entry(frame2)
-    password_label = Label(frame2, text = 'Password', font = ('Arial', 14))
-    password_entry = Entry(frame2, show = '*')
-    password_confirm_label = Label(frame2, text = 'Confirm Password', font = ('Arial', 14))
-    password_confirm_entry = Entry(frame2, show = '*')
-    create_account_button = Button(frame2, text = 'Create Account', font = ('Arial', 14), 
+    create_account_label = ctk.CTkLabel(frame2, text = 'Create Your Account', font = ('Arial Bold', 20))
+    first_name_label = ctk.CTkLabel(frame2, text = 'First Name', font = ('Arial', 14))
+    first_name_entry = ctk.CTkEntry(frame2)
+    last_name_label = ctk.CTkLabel(frame2, text = 'Last Name', font = ('Arial', 14))
+    last_name_entry = ctk.CTkEntry(frame2)
+    username_label = ctk.CTkLabel(frame2, text = 'Username', font = ('Arial', 14))
+    username_entry = ctk.CTkEntry(frame2)
+    password_label = ctk.CTkLabel(frame2, text = 'Password', font = ('Arial', 14))
+    password_entry = ctk.CTkEntry(frame2, show = '*')
+    password_confirm_label = ctk.CTkLabel(frame2, text = 'Confirm Password', font = ('Arial', 14))
+    password_confirm_entry = ctk.CTkEntry(frame2, show = '*')
+    create_account_button = ctk.CTkButton(frame2, text = 'Create Account', font = ('Arial', 14),
                              command = lambda : register_confirm(cur, wn, first_name_entry.get(), last_name_entry.get(),
                                                                   username_entry.get(), password_entry.get(), password_confirm_entry.get()))
-    exit_button = Button(frame2, text = 'Exit', font = ('Arial', 14), 
+    exit_button = ctk.CTkButton(frame2, text = 'Exit', font = ('Arial', 14),
                          command = lambda : wn.destroy())
 
     # Placing widgets on the screen
@@ -152,7 +152,7 @@ def register(cur, root):
     password_entry.grid(row=9, column=0, pady=(0,10))
     password_confirm_label.grid(row=10, column=0, sticky = 'W')
     password_confirm_entry.grid(row=11, column=0, pady=(0,10))
-    create_account_button.grid(row=12, column=0, sticky = 'W')
+    create_account_button.grid(row=12, column=0, sticky = 'W', padx=(0, 200))
     exit_button.grid(row=12, column=0, sticky = 'E')
 
     frame2.pack(anchor = tk.CENTER)
@@ -165,14 +165,14 @@ def start_screen(cnx, cur, root):
     frame = tk.Frame()
 
     # Creating widgets
-    login_label = tk.Label(frame, text = 'Login to your account', font = ('Arial Bold', 20))
-    username_label = tk.Label(frame, text = 'Username', font = ('Arial', 14))
-    username_entry = tk.Entry(frame)
-    password_label = tk.Label(frame, text = 'Password', font = ('Arial', 14))
-    password_entry = tk.Entry(frame, show = '*')
-    login_button = tk.Button(frame, text = 'Login', font = ('Arial', 14),
+    login_label = ctk.CTkLabel(frame, text = 'Login to your account', font = ('Arial Bold', 20))
+    username_label = ctk.CTkLabel(frame, text = 'Username', font = ('Arial', 14))
+    username_entry = ctk.CTkEntry(frame)
+    password_label = ctk.CTkLabel(frame, text = 'Password', font = ('Arial', 14))
+    password_entry = ctk.CTkEntry(frame, show = '*')
+    login_button = ctk.CTkButton(frame, text = 'Login', font = ('Arial', 14),
                              command = lambda : [login(cnx, cur, root, username_entry.get(), password_entry.get())])
-    register_button = tk.Button(frame, text = 'Register', font = ('Arial', 14), 
+    register_button = ctk.CTkButton(frame, text = 'Register', font = ('Arial', 14),
                                 command = lambda : [register(cur, root), cnx.commit()])
     logo = ImageTk.PhotoImage(Image.open('nba_logo.png'))
     logo_label = tk.Label(frame, image=logo)
@@ -191,7 +191,7 @@ def start_screen(cnx, cur, root):
     password_label.grid(row=4, column=0, sticky = 'W')
     password_entry.grid(row=5, column=0, pady=(0,10))
     login_button.grid(row=6, column=0, sticky = 'E')
-    register_button.grid(row=6, column=0, sticky = 'W')
+    register_button.grid(row=6, column=0, sticky = 'W',padx=(0, 200))
 
     frame.pack(anchor = tk.CENTER)
     root.mainloop()
