@@ -30,14 +30,23 @@ def open_window(cnx, cur, root, window):
 
     # initialize variables
     is_on = {}
-    df_sorted = df = pd.DataFrame({'player_name': pd.Series(dtype='str'),
+    df = pd.DataFrame({'player_name': pd.Series(dtype='str'),
                                    'season_year': pd.Series(dtype='str'),
                                    'position': pd.Series(dtype='str'),
                                    'team': pd.Series(dtype='str')})
 
-    df_sorted = df_sorted[['player_name', 'season_year', 'position', 'team']]
-    df_sorted = df_sorted.rename(
+    df = df[['player_name', 'season_year', 'position', 'team']]
+    df = df.rename(
         columns={'player_name': 'Name', 'season_year': 'Year', 'position': 'Position', 'team': 'Team'})
+
+    # tree view frame
+    treeview_frame = ttk.Treeview(frame3, height=18, padding=1, show="headings")
+    treeview_frame.grid(row=0, column=1, padx=(20, 0), pady=(20, 0), sticky="nsew")
+    treeview_frame['columns'] = list(df.columns)
+
+    # Create heading columns
+    for column in df.columns:
+        treeview_frame.heading(column, text=column)
 
     # Createing widgets
     frame_filters = customtkinter.CTkFrame(frame3, width=150, height=400)
@@ -50,7 +59,7 @@ def open_window(cnx, cur, root, window):
     # TODO: fill with data from DB
     year_dd = customtkinter.CTkOptionMenu(frame_filters,
                                           dynamic_resizing=True,
-                                          values=["Any Year", "2023", "2022", "2021"])
+                                          values=["2023", "2022", "2021"])
 
     year_dd.grid(row=1, column=0, padx=20, pady=(10, 10))
 
@@ -72,21 +81,12 @@ def open_window(cnx, cur, root, window):
     search_button = customtkinter.CTkButton(frame_filters, text="Search",
                                             command=lambda: [run_search(cur, year_dd.get(), position_dd.get(),
                                                                         player_name_entry.get(),
-                                                                        team_name_entry.get())])
+                                                                        team_name_entry.get(), treeview_frame)])
     search_button.grid(row=5, column=0, padx=20, pady=(10, 10))
 
     back = customtkinter.CTkButton(frame_filters, text="Back",
                                    command=lambda: [wn.destroy(), window.deiconify()])
     back.grid(row=6, column=0, padx=20, pady=(10, 10))
-
-    # tree view frame
-    treeview_frame = ttk.Treeview(frame3, height=18, padding=1, show="headings")
-    treeview_frame.grid(row=0, column=1, padx=(20, 0), pady=(20, 0), sticky="nsew")
-    treeview_frame['columns'] = list(df_sorted.columns)
-
-    # Create heading columns
-    for column in df_sorted.columns:
-        treeview_frame.heading(column, text=column)
 
     frame3.pack(anchor=tk.CENTER)
 
@@ -94,7 +94,7 @@ def open_window(cnx, cur, root, window):
     wn.mainloop()
 
 
-def run_search(cur, year, position, p_name, t_name):
+def run_search(cur, year, position, p_name, t_name, treeview):
     # where we should run search with given inputs
     filler = 0
     print(year)
@@ -108,8 +108,8 @@ def run_search(cur, year, position, p_name, t_name):
     t_name_input = t_name
 
     # empty string vs null
-    if year == "Any Year":
-        year_input = "NULL"
+    # if position == "Any Position":
+        # year_input = "0"
 
     if position == "Any Position":
         position_input = "NULL"
@@ -120,8 +120,24 @@ def run_search(cur, year, position, p_name, t_name):
     if t_name == "":
         t_name_input = "NULL"
 
-    cur.execute(f"CALL player_search('{year_input}', '{position_input}', '{p_name_input}', '{t_name_input}')")
+    cur.execute(f"CALL player_search('{p_name_input}', '{year_input}', '{position_input}', '{t_name_input}')")
+    df = pd.DataFrame({'player_name': pd.Series(dtype='str'),
+                       'season_year': pd.Series(dtype='str'),
+                       'position': pd.Series(dtype='str'),
+                       'team': pd.Series(dtype='str')})
+    for row in cur.fetchall():
+        new_row = {'player_name': row['player'], 'season_year': row['season'],
+                   'position': row['pos'], 'team': row['tm']}
+        df.loc[len(df)] = new_row
 
+    if not df.empty:
+        df_trimmed = df[["player_name", "season_year", "position", "team"]]
+
+    for item in treeview.get_children():
+        treeview.delete(item)
+
+    for index, row in df_trimmed.iterrows():
+        treeview.insert("", tk.END, values=list(row))
 
 def on_closing(root):
     if messagebox.askokcancel("Quit", "Do you want to quit?"):
