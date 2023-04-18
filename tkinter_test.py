@@ -45,7 +45,7 @@ def main_menu(cnx, cur, root):
     exit_btn = ctk.CTkButton(frame2, text = 'Exit', font = ('Arial', 14),
                         command = lambda : [wn.destroy(), root.deiconify()])
     btn1 = ctk.CTkButton(frame2, text = 'View / Search Players', font = ('Arial', 14),
-                  command = lambda: [open_window(cnx, cur, root)])
+                  command = lambda: [open_window(cnx, cur, root, wn)])
     btn2 = ctk.CTkButton(frame2, text = 'View / Search Teams', font = ('Arial', 14),
                     command = lambda : print('ok') )
     btn3 = ctk.CTkButton(frame2, text = 'View / Search All Star Teams', font = ('Arial', 14),
@@ -185,13 +185,13 @@ def start_screen(cnx, cur, root):
 
     # Placing widgets on the screen
     logo_label.grid(row=0, column=0, columnspan=2, sticky = 'NEWS')
-    login_label.grid(row=1, column=0, columnspan=2, sticky='NEWS', pady=(0,10))
-    username_label.grid(row=2, column=0, sticky = 'W')
-    username_entry.grid(row=3, column=0, pady=(0,10))
-    password_label.grid(row=4, column=0, sticky = 'W')
-    password_entry.grid(row=5, column=0, pady=(0,10))
-    login_button.grid(row=6, column=0, sticky = 'E')
-    register_button.grid(row=6, column=0, sticky = 'W',padx=(0, 200))
+    login_label.grid(row=1, column=0, columnspan=2, sticky='NEWS', pady=(0,30))
+    username_label.grid(row=2, column=0, sticky = 'NW')
+    username_entry.grid(row=2, column=0, pady=(0,10))
+    password_label.grid(row=4, column=0, sticky = 'NW')
+    password_entry.grid(row=4, column=0, pady=(0,10))
+    login_button.grid(row=6, column=0, sticky = 'E', pady=(30,0))
+    register_button.grid(row=6, column=0, sticky = 'W',padx=(0, 200), pady=(30,0))
 
     frame.pack(anchor = tk.CENTER)
     root.mainloop()

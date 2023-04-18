@@ -13,8 +13,9 @@ customtkinter.set_appearance_mode("Light")  # Modes: "System" (standard), "Dark"
 customtkinter.set_default_color_theme("dark-blue")  # Themes: "blue" (standard), "green", "dark-blue"
 
 
-def open_window(cnx, cur, root):
-    root.withdraw()
+def open_window(cnx, cur, root, window):
+    #root.withdraw()
+    window.withdraw()
     # Create new window
     wn = Toplevel(root)
     frame3 = Frame(wn)
@@ -72,8 +73,7 @@ def open_window(cnx, cur, root):
     search_button.grid(row=4, column=0, padx=20, pady=(10, 10))
 
     back = customtkinter.CTkButton(tab_view_filters.tab("Player Search"), text="Back",
-                                            command=lambda: [run_search(year_dd, position_dd, player_name_entry,
-                                                                        team_name_entry)])
+                                            command=lambda: [wn.destroy(), window.deiconify()])
     back.grid(row=5, column=0, padx=20, pady=(10, 10))
 
     # tree view frame
@@ -87,7 +87,7 @@ def open_window(cnx, cur, root):
 
     frame3.pack(anchor=tk.CENTER)
 
-    wn.protocol("WM_DELETE_WINDOW", lambda: on_closing(root))
+    wn.protocol("WM_DELETE_WINDOW", lambda: [wn.destroy(), window.deiconify()])
     wn.mainloop()
 
 
