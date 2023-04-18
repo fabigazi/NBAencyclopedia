@@ -8,13 +8,13 @@ from tkinter import messagebox, ttk
 import pandas as pd
 from PIL import Image, ImageTk
 
-from tkinter_test import on_closing
+from window import Window
 
-customtkinter.set_appearance_mode("Light")  # Modes: "System" (standard), "Dark", "Light"
-customtkinter.set_default_color_theme("dark-blue")  # Themes: "blue" (standard), "green", "dark-blue"
 
 def open_window(cnx, cur, root):
-    root.withdraw()
+    customtkinter.set_appearance_mode("Light")  # Modes: "System" (standard), "Dark", "Light"
+    customtkinter.set_default_color_theme("blue")  # Themes: "blue" (standard), "green", "dark-blue"
+
     # Create new window
     wn = Toplevel(root)
     frame3 = Frame(wn)
@@ -136,11 +136,6 @@ def open_window(cnx, cur, root):
     # Create heading columns
     for column in df_sorted.columns:
         treeview_frame.heading(column, text=column)
-
-    frame3.pack(anchor=tk.CENTER)
-
-    wn.protocol("WM_DELETE_WINDOW", lambda: on_closing(root))
-    wn.mainloop()
 
 def run_search(self):
     # Add df rows to treeview

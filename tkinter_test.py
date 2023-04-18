@@ -4,8 +4,7 @@ from tkinter import *
 from tkinter import messagebox
 from PIL import Image, ImageTk
 
-from window import Window
-from window_template import open_window
+
 
 
 def username_exists(cur, username):
@@ -88,8 +87,6 @@ def login(cnx, cur, root, username, password):
 
     return
 
-def open(cnx, cur, root):
-    open_window(cnx, cur, root)
 
 def register_confirm(cur, window, first_name, last_name, username, password, password_confirm):
 
@@ -175,7 +172,7 @@ def start_screen(cnx, cur, root):
                              command = lambda : [login(cnx, cur, root, username_entry.get(), password_entry.get())])
     register_button = tk.Button(frame, text = 'Register', font = ('Arial', 14), 
                                 command = lambda : [register(cur, root), cnx.commit()])
-    logo = ImageTk.PhotoImage(Image.open('nba_logo.png'))
+    logo = ImageTk.PhotoImage(Image.open('../nba_logo.png'))
     logo_label = tk.Label(frame, image=logo)
     logo_label.image = logo
 
