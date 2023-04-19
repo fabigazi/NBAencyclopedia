@@ -59,14 +59,14 @@ def open_window(cnx, cur, root, window):
     # TODO: fill with data from DB
     year_dd = customtkinter.CTkOptionMenu(frame_filters,
                                           dynamic_resizing=True,
-                                          values=["2023", "2022", "2021"])
+                                          values=["Any Year", "2023", "2022", "2021"])
 
     year_dd.grid(row=1, column=0, padx=20, pady=(10, 10))
 
     # TODO: fill with data from DB
     position_dd = customtkinter.CTkOptionMenu(frame_filters,
                                               dynamic_resizing=True,
-                                              values=["Any Position", "SG", "SF", "PF"])
+                                              values=["Any Position","PG", "SG", "SF", "PF", "C"])
 
     position_dd.grid(row=2, column=0, padx=20, pady=(10, 10))
 
@@ -96,31 +96,31 @@ def open_window(cnx, cur, root, window):
 
 def run_search(cur, year, position, p_name, t_name, treeview):
     # where we should run search with given inputs
-    filler = 0
+    # filler = 0
     print(year)
     print(position)
     print(p_name)
     print(t_name)
-
-    year_input = year
-    position_input = position
-    p_name_input = p_name
-    t_name_input = t_name
-
+    input = ''
     # empty string vs null
     # if position == "Any Position":
         # year_input = "0"
 
-    if position == "Any Position":
-        position_input = "NULL"
+    if year != "Any Year":
+        input += 'Y'
+    
+    if position != "Any Position":
+        input += 'P'
 
-    if p_name == "":
-        p_name_input = "NULL"
+    if p_name != "":
+        input += 'N'
 
-    if t_name == "":
-        t_name_input = "NULL"
-
-    cur.execute(f"CALL player_search('{p_name_input}', '{year_input}', '{position_input}', '{t_name_input}')")
+    if t_name != "":
+        input += 'T'
+    
+    command = get_command(input, year, position, p_name, t_name)
+    cur.execute(command)
+    # cur.execute(f"CALL player_search('{p_name_input}', '{year_input}', '{position_input}', '{t_name_input}')")
     df = pd.DataFrame({'player_name': pd.Series(dtype='str'),
                        'season_year': pd.Series(dtype='str'),
                        'position': pd.Series(dtype='str'),
@@ -144,3 +144,37 @@ def on_closing(root):
         # wn.destroy()
         root.destroy()
         quit
+
+def get_command(input, year, position, p_name, t_name):
+    if input == '':
+        return 'CALL generic_player_search()'
+    elif input == 'Y':
+        return f'CALL player_search_year({year})'
+    elif input == 'P':
+        return f'CALL player_search_pos("{position}")'
+    elif input == 'N':
+        return f'CALL player_search_name("{p_name}")'
+    elif input == 'T':
+        return f'CALL player_search_team("{t_name}")'
+    elif input == 'YP':
+        return f'CALL player_search_year_pos({year}, "{position}")'
+    elif input == 'YN':
+        return f'CALL player_search_year_name({year}, "{p_name}")'
+    elif input == 'YT':
+        return f'CALL player_search_year_team({year}, "{t_name}")'
+    elif input == 'PN':
+        return f'CALL player_search_pos_name("{position}", "{p_name}")'
+    elif input == 'PT':
+        return f'CALL player_search_pos_team("{position}", "{t_name}")'
+    elif input == 'NT':
+        return f'CALL player_search_name_team("{p_name}", "{t_name}")'
+    elif input == 'YPN':
+        return f'CALL player_search_year_pos_name({year}, "{position}", "{p_name}")'
+    elif input == 'YPT':
+        return f'CALL player_search_year_pos_team({year}, "{position}", "{t_name}")'
+    elif input == 'PNT':
+        return f'CALL player_search_pos_name_team("{position}", "{p_name}", "{t_name}")'
+    else:
+        return f'CALL player_search_all({year}, "{position}", "{p_name}", "{t_name}")'
+    
+
