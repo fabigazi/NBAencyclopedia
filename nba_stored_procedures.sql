@@ -234,6 +234,15 @@ BEGIN
 end ;;
 DELIMITER ;
 
+drop procedure if EXISTS player_search_team_drop_down;
+DELIMITER ;;
+CREATE PROCEDURE player_search_team_drop_down ()
+BEGIN
+	SELECT Distinct tm FROM nba_app.player_final
+		ORDER BY tm DESC;
+end ;;
+DELIMITER ;
+
 
     
     

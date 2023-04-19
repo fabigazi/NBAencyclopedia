@@ -76,7 +76,7 @@ def open_window(cnx, cur, root, window):
     Label.grid(row=0, column=0, padx=20, pady=(8, 8))
 
     # Year
-    year_dd = customtkinter.CTkOptionMenu(frame_filters, dynamic_resizing=True, values=year_drop_down)
+    year_dd = customtkinter.CTkOptionMenu(frame_filters, dynamic_resizing=False, values=year_drop_down)
 
     year_dd.grid(row=1, column=0, padx=20, pady=(10, 10))
 
