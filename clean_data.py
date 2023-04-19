@@ -26,4 +26,4 @@ if __name__ == '__main__':
         output.loc[len(output)] = new_row
 
     test = 10
-    output.to_csv('output.csv', sep=',', encoding='utf-8')
+    # output.to_csv('', sep=',', encoding='utf-8')

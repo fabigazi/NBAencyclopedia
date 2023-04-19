@@ -1,18 +1,16 @@
-import math
+
 
 import customtkinter
-import pymysql
 import tkinter as tk
 from tkinter import *
 from tkinter import messagebox, ttk
 import pandas as pd
-from PIL import Image, ImageTk
 
 customtkinter.set_appearance_mode("Light")  # Modes: "System" (standard), "Dark", "Light"
 customtkinter.set_default_color_theme("dark-blue")  # Themes: "blue" (standard), "green", "dark-blue"
 
 
-def open_window(cnx, cur, root, window):
+def open_player_search(cnx, cur, root, window):
     # root.withdraw()
     window.withdraw()
     # Create new window

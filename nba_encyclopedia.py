@@ -1,12 +1,16 @@
-import pymysql
 import tkinter as tk
 from tkinter import *
 from tkinter import messagebox
-from PIL import Image, ImageTk
+
 import customtkinter as ctk
+import pymysql
+from PIL import Image, ImageTk
 
-
-from player_search_window import open_window
+from windows.allstar_search import allstar_search
+from windows.create_fantasy import open_create_fantasy
+from windows.fantasy_search import fantasy_search
+from windows.player_search import open_player_search
+from windows.team_search import open_team_search
 
 
 def username_exists(cur, username):
@@ -45,15 +49,15 @@ def main_menu(cnx, cur, root):
     exit_btn = ctk.CTkButton(frame2, text = 'Exit', font = ('Arial', 14),
                         command = lambda : [wn.destroy(), root.deiconify()])
     btn1 = ctk.CTkButton(frame2, text = 'View / Search Players', font = ('Arial', 14),
-                  command = lambda: [open_window(cnx, cur, root, wn)])
+                         command = lambda: [open_player_search(cnx, cur, root, wn)])
     btn2 = ctk.CTkButton(frame2, text = 'View / Search Teams', font = ('Arial', 14),
-                    command = lambda : print('ok') )
+                    command = lambda : [open_team_search(cnx, cur, root, wn)] )
     btn3 = ctk.CTkButton(frame2, text = 'View / Search All Star Teams', font = ('Arial', 14),
-                    command = lambda : print('ok') )
+                    command = lambda : [allstar_search(cnx, cur, root, wn)])
     btn4 = ctk.CTkButton(frame2, text = 'View / Search Fantasy Teams', font = ('Arial', 14),
-                    command = lambda : print('ok') )
+                    command = lambda : [fantasy_search(cnx, cur, root, wn)] )
     btn5 = ctk.CTkButton(frame2, text = 'Create a Team', font = ('Arial', 14),
-                    command = lambda : print('ok') )
+                    command = lambda : [open_create_fantasy(cnx, cur, root, wn)])
         
     # Placing widgets on the screen
     menu_label.grid(row=1, column=0, columnspan=2, sticky='NEWS', pady=(20,30))
