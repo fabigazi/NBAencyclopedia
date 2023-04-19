@@ -19,6 +19,25 @@ def open_window(cnx, cur, root, window):
     wn = Toplevel(root)
     frame3 = Frame(wn)
 
+    # load Drop-downs
+    year_drop_down = ["Any Year"]
+    cur.execute('CALL player_search_years_drop_down()')
+
+    for row in cur.fetchall():
+        year_drop_down.append(str(row['season']))
+
+    position_drop_down = ["Any Position"]
+    cur.execute('CALL player_search_position_drop_down()')
+
+    for row in cur.fetchall():
+        position_drop_down.append(str(row['pos']))
+
+    team_drop_down = ["Any Team"]
+    cur.execute('CALL player_search_team_drop_down()')
+
+    for row in cur.fetchall():
+        team_drop_down.append(str(row['tm']))
+
     # Set window specifications and location
     window_width = 1100
     window_height = 450
@@ -31,9 +50,9 @@ def open_window(cnx, cur, root, window):
     # initialize variables
     is_on = {}
     df = pd.DataFrame({'player_name': pd.Series(dtype='str'),
-                                   'season_year': pd.Series(dtype='str'),
-                                   'position': pd.Series(dtype='str'),
-                                   'team': pd.Series(dtype='str')})
+                       'season_year': pd.Series(dtype='str'),
+                       'position': pd.Series(dtype='str'),
+                       'team': pd.Series(dtype='str')})
 
     df = df[['player_name', 'season_year', 'position', 'team']]
     df = df.rename(
@@ -51,32 +70,30 @@ def open_window(cnx, cur, root, window):
     # Createing widgets
     frame_filters = customtkinter.CTkFrame(frame3, width=150, height=400)
     frame_filters.grid(row=0, column=0, padx=(20, 0), pady=(20, 0), sticky="nsew")
-    #frame_filters.add("Player Search")
+    # frame_filters.add("Player Search")
     Label = customtkinter.CTkLabel(frame_filters, text="Player Search:")
 
     Label.grid(row=0, column=0, padx=20, pady=(8, 8))
 
-    # TODO: fill with data from DB
-    year_dd = customtkinter.CTkOptionMenu(frame_filters,
-                                          dynamic_resizing=True,
-                                          values=["Any Year", "2023", "2022", "2021"])
+    # Year
+    year_dd = customtkinter.CTkOptionMenu(frame_filters, dynamic_resizing=True, values=year_drop_down)
 
     year_dd.grid(row=1, column=0, padx=20, pady=(10, 10))
 
-    # TODO: fill with data from DB
-    position_dd = customtkinter.CTkOptionMenu(frame_filters,
-                                              dynamic_resizing=True,
-                                              values=["Any Position","PG", "SG", "SF", "PF", "C"])
+    # Position
+    position_dd = customtkinter.CTkOptionMenu(frame_filters, dynamic_resizing=True, values=position_drop_down)
 
     position_dd.grid(row=2, column=0, padx=20, pady=(10, 10))
 
+    # Team Name
+    team_name_entry = customtkinter.CTkOptionMenu(frame_filters, dynamic_resizing=True, values=team_drop_down)
+
+    team_name_entry.grid(row=3, column=0, padx=20, pady=(10, 10))
+
+    # Player Name
     player_name_entry = customtkinter.CTkEntry(frame_filters,
                                                placeholder_text="Player Name")
-    player_name_entry.grid(row=3, column=0, padx=20, pady=(10, 10))
-
-    team_name_entry = customtkinter.CTkEntry(frame_filters,
-                                             placeholder_text="Team Name")
-    team_name_entry.grid(row=4, column=0, padx=20, pady=(10, 10))
+    player_name_entry.grid(row=4, column=0, padx=20, pady=(10, 10))
 
     search_button = customtkinter.CTkButton(frame_filters, text="Search",
                                             command=lambda: [run_search(cur, year_dd.get(), position_dd.get(),
@@ -104,20 +121,20 @@ def run_search(cur, year, position, p_name, t_name, treeview):
     input = ''
     # empty string vs null
     # if position == "Any Position":
-        # year_input = "0"
+    # year_input = "0"
 
     if year != "Any Year":
         input += 'Y'
-    
+
     if position != "Any Position":
         input += 'P'
 
     if p_name != "":
         input += 'N'
 
-    if t_name != "":
+    if t_name != "Any Team":
         input += 'T'
-    
+
     command = get_command(input, year, position, p_name, t_name)
     cur.execute(command)
     # cur.execute(f"CALL player_search('{p_name_input}', '{year_input}', '{position_input}', '{t_name_input}')")
@@ -139,11 +156,13 @@ def run_search(cur, year, position, p_name, t_name, treeview):
     for index, row in df_trimmed.iterrows():
         treeview.insert("", tk.END, values=list(row))
 
+
 def on_closing(root):
     if messagebox.askokcancel("Quit", "Do you want to quit?"):
         # wn.destroy()
         root.destroy()
         quit
+
 
 def get_command(input, year, position, p_name, t_name):
     if input == '':
@@ -176,5 +195,3 @@ def get_command(input, year, position, p_name, t_name):
         return f'CALL player_search_pos_name_team("{position}", "{p_name}", "{t_name}")'
     else:
         return f'CALL player_search_all({year}, "{position}", "{p_name}", "{t_name}")'
-    
-
