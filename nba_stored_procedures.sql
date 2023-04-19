@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS user_table
 
 
 /* Procedure to create new user */
-drop procedure if EXISTS
+drop procedure if EXISTS create_username;
 delimiter $$
 create procedure create_username(username varchar(50), first_name char(50), last_name char(50), password varchar(50))
 
@@ -21,11 +21,11 @@ begin
 end $$
 delimiter ;
 
-call create_username('test', 'test', 'test', 'test');
+-- call create_username('test', 'test', 'test', 'test');
 
 /* Function to check if user account exists 
 	CURRENTLY NOT USING THIS IN CODE - KEEPING IN CASE WE DECIDE TO IMPLEMENT IT*/
-drop procedure if EXISTS check_user;
+drop FUNCTION if EXISTS check_user;
 DELIMITER $$
 CREATE FUNCTION check_user (username VARCHAR(20))
 	RETURNS BOOL
