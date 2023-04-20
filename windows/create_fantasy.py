@@ -10,7 +10,7 @@ customtkinter.set_appearance_mode("Light")  # Modes: "System" (standard), "Dark"
 customtkinter.set_default_color_theme("dark-blue")  # Themes: "blue" (standard), "green", "dark-blue"
 
 
-def open_create_fantasy(username, cur, root, window):
+def open_create_fantasy(username, cnx, cur, root, window):
     # root.withdraw()
     window.withdraw()
     # Create new window
@@ -32,7 +32,7 @@ def open_create_fantasy(username, cur, root, window):
 
     df = df[['team', 'players']]
     df = df.rename(
-        columns={'team': 'Team', 'players': 'Players'})
+        columns={'team': 'Team Name', 'players': 'Player Count'})
 
     # tree view frame
     treeview_fantasy = ttk.Treeview(frame3, height=18, padding=1, show="headings")
@@ -54,19 +54,24 @@ def open_create_fantasy(username, cur, root, window):
     # Team Name
     team_name_entry = customtkinter.CTkEntry(frame_filters,
                                              placeholder_text="Team Name")
-    team_name_entry.grid(row=4, column=0, padx=20, pady=(10, 10))
+    team_name_entry.grid(row=1, column=0, padx=20, pady=(10, 10))
 
     add = customtkinter.CTkButton(frame_filters, text="Add New Team",
-                                  command=lambda: [add_team(cur, username, team_name_entry.get(), treeview_fantasy)])
-    add.grid(row=6, column=0, padx=20, pady=(10, 10))
+                                  command=lambda: [add_team(cur, username, team_name_entry.get(),
+                                                            treeview_fantasy), cnx.commit()])
+    add.grid(row=2, column=0, padx=20, pady=(10, 10))
 
     delete = customtkinter.CTkButton(frame_filters, text="Delete Team",
+                                     command=lambda: [delete_team(cur, username, treeview_fantasy), cnx.commit()])
+    delete.grid(row=3, column=0, padx=20, pady=(10, 10))
+
+    edit = customtkinter.CTkButton(frame_filters, text="Edit Team",
                                      command=lambda: [delete_team(cur, username, treeview_fantasy)])
-    delete.grid(row=7, column=0, padx=20, pady=(10, 10))
+    edit.grid(row=4, column=0, padx=20, pady=(10, 10))
 
     back = customtkinter.CTkButton(frame_filters, text="Back",
                                    command=lambda: [wn.destroy(), window.deiconify()])
-    back.grid(row=8, column=0, padx=20, pady=(10, 10))
+    back.grid(row=5, column=0, padx=20, pady=(10, 10))
 
     user_fantasy_search(cur, username, treeview_fantasy)
 
@@ -95,7 +100,7 @@ def user_fantasy_search(cur, username, treeview):
     # cur.execute(f"CALL player_search('{p_name_input}', '{year_input}', '{position_input}', '{t_name_input}')")
     df = pd.DataFrame({'team': pd.Series(dtype='str'),
                        'players': pd.Series(dtype='str')})
-    
+
     df_trimmed = pd.DataFrame({'team': pd.Series(dtype='str'),
                                'players': pd.Series(dtype='str')})
     for row in cur.fetchall():

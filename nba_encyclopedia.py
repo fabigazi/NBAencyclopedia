@@ -58,7 +58,7 @@ def main_menu(cnx, cur, root, username):
     btn4 = ctk.CTkButton(frame2, text='View / Search Fantasy Teams', font=('Arial', 14),
                          command=lambda: [fantasy_search(cnx, cur, root, wn)])
     btn5 = ctk.CTkButton(frame2, text='Create a Team', font=('Arial', 14),
-                         command=lambda: [open_create_fantasy(username, cur, root, wn)])
+                         command=lambda: [open_create_fantasy(username, cnx, cur, root, wn)])
 
     # Placing widgets on the screen
     menu_label.grid(row=1, column=0, columnspan=2, sticky='NEWS', pady=(20, 30))
