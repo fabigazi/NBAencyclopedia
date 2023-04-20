@@ -107,12 +107,12 @@ DROP TABLE IF EXISTS `fantasy_players`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `fantasy_players` (
-  `f_player_id` INT NOT NULL AUTO_INCREMENT PRIMARY key,
   `username` varchar(20) NOT NULL,
   `team_name` varchar(20) NOT NULL,
-  `players` int DEFAULT NULL,
+  `players_id` int DEFAULT NULL,
+  PRIMARY KEY (`username`,`team_name`,`players_id`),
   CONSTRAINT FK_Table1_Table2
-  FOREIGN KEY(`username`, `team_name`) REFERENCES `fantasy_teams` (`username`, `team_name`)
+  FOREIGN KEY(`username`, `team_name`) REFERENCES `fantasy_teams` (`username`, `team_name`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
