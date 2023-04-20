@@ -6,7 +6,7 @@ from tkinter import *
 from tkinter import messagebox, ttk
 import pandas as pd
 
-from windows.create_fantasy import user_fantasy_search
+# from windows.create_fantasy import user_fantasy_search
 
 customtkinter.set_appearance_mode("Light")  # Modes: "System" (standard), "Dark", "Light"
 customtkinter.set_default_color_theme("dark-blue")  # Themes: "blue" (standard), "green", "dark-blue"
@@ -103,8 +103,8 @@ def open_add_to_fantasy(username, team_name, cnx, cur, root, window, treeview):
     search_button.grid(row=5, column=0, padx=20, pady=(10, 10))
 
     add = customtkinter.CTkButton(frame_filters, text="Add",
-                                   command=lambda: [wn.destroy(), window.deiconify(),
-                                                    user_fantasy_search(cur, username, treeview)])
+                                   command=lambda: [wn.destroy(), window.deiconify()])
+                                                    #user_fantasy_search(cur, username, treeview)])
     add.grid(row=6, column=0, padx=20, pady=(10, 10))
 
     back = customtkinter.CTkButton(frame_filters, text="Back",
