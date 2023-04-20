@@ -110,8 +110,11 @@ DROP TABLE IF EXISTS `fantasy_players`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `fantasy_players` (
   `f_player_id` INT NOT NULL AUTO_INCREMENT PRIMARY key,
-  `fantasy_team_id` varchar(20) NOT NULL,
-  `players` int DEFAULT NULL
+  `username` varchar(20) NOT NULL,
+  `team_name` varchar(20) NOT NULL,
+  `players` int DEFAULT NULL,
+  CONSTRAINT FK_Table1_Table2
+  FOREIGN KEY(`username`, `team_name`) REFERENCES `fantasy_teams` (`username`, `team_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
