@@ -1,40 +1,21 @@
-
-
 import customtkinter
 import tkinter as tk
 from tkinter import *
 from tkinter import messagebox, ttk
 import pandas as pd
 
+from windows.populate_dds import *
+
 customtkinter.set_appearance_mode("Light")  # Modes: "System" (standard), "Dark", "Light"
 customtkinter.set_default_color_theme("dark-blue")  # Themes: "blue" (standard), "green", "dark-blue"
 
 
-def open_create_fantasy(cnx, cur, root, window):
+def open_create_fantasy(username, cur, root, window):
     # root.withdraw()
     window.withdraw()
     # Create new window
     wn = Toplevel(root)
     frame3 = Frame(wn)
-
-    # load Drop-downs
-    year_drop_down = ["Any Year"]
-    cur.execute('CALL player_search_years_drop_down()')
-
-    for row in cur.fetchall():
-        year_drop_down.append(str(row['season']))
-
-    position_drop_down = ["Any Position"]
-    cur.execute('CALL player_search_position_drop_down()')
-
-    for row in cur.fetchall():
-        position_drop_down.append(str(row['pos']))
-
-    team_drop_down = ["Any Team"]
-    cur.execute('CALL player_search_team_drop_down()')
-
-    for row in cur.fetchall():
-        team_drop_down.append(str(row['tm']))
 
     # Set window specifications and location
     window_width = 1100
@@ -47,66 +28,47 @@ def open_create_fantasy(cnx, cur, root, window):
 
     # initialize variables
     df = pd.DataFrame({'team': pd.Series(dtype='str'),
-                       'season_year': pd.Series(dtype='str')})
+                       'players': pd.Series(dtype='str')})
 
-    df = df[['team', 'season_year']]
+    df = df[['team', 'players']]
     df = df.rename(
-        columns={'team': 'Team', 'season_year': 'Year'})
+        columns={'team': 'Team', 'players': 'Players'})
 
     # tree view frame
-    treeview_search = ttk.Treeview(frame3, height=18, padding=1, show="headings")
-    treeview_search.grid(row=0, column=1, padx=(20, 0), pady=(20, 0), sticky="nsew")
-    treeview_search['columns'] = list(df.columns)
-
     treeview_fantasy = ttk.Treeview(frame3, height=18, padding=1, show="headings")
-    treeview_fantasy.grid(row=0, column=2, padx=(20, 0), pady=(20, 0), sticky="nsew")
+    treeview_fantasy.grid(row=0, column=1, padx=(20, 0), pady=(20, 0), sticky="nsew")
     treeview_fantasy['columns'] = list(df.columns)
 
     # Create heading columns
     for column in df.columns:
-        treeview_search.heading(column, text=column)
+        treeview_fantasy.heading(column, text=column)
 
     # Createing widgets
     frame_filters = customtkinter.CTkFrame(frame3, width=150, height=400)
     frame_filters.grid(row=0, column=0, padx=(20, 0), pady=(20, 0), sticky="nsew")
     # frame_filters.add("Player Search")
-    Label = customtkinter.CTkLabel(frame_filters, text="Create Fantasy Team:")
+    Label = customtkinter.CTkLabel(frame_filters, text="Create/Select Fantasy Team:")
 
     Label.grid(row=0, column=0, padx=20, pady=(8, 8))
 
-    # Year
-    year_dd = customtkinter.CTkOptionMenu(frame_filters, dynamic_resizing=False, values=year_drop_down)
-
-    year_dd.grid(row=1, column=0, padx=20, pady=(0, 10))
-
-    # Position
-    position_dd = customtkinter.CTkOptionMenu(frame_filters, dynamic_resizing=True, values=position_drop_down)
-
-    position_dd.grid(row=2, column=0, padx=20, pady=(10, 10))
-
     # Team Name
-    team_name_entry = customtkinter.CTkOptionMenu(frame_filters, dynamic_resizing=True, values=team_drop_down)
+    team_name_entry = customtkinter.CTkEntry(frame_filters,
+                                             placeholder_text="Team Name")
+    team_name_entry.grid(row=4, column=0, padx=20, pady=(10, 10))
 
-    team_name_entry.grid(row=3, column=0, padx=20, pady=(10, 10))
-
-    # Player Name
-    player_name_entry = customtkinter.CTkEntry(frame_filters,
-                                               placeholder_text="Player Name")
-    player_name_entry.grid(row=4, column=0, padx=20, pady=(10, 10))
-
-    search_button = customtkinter.CTkButton(frame_filters, text="Search",
-                                            command=lambda: [run_search(cur, year_dd.get(), position_dd.get(),
-                                                                        player_name_entry.get(),
-                                                                        team_name_entry.get(), treeview_search)])
-    search_button.grid(row=5, column=0, padx=20, pady=(10, 10))
-
-    add = customtkinter.CTkButton(frame_filters, text="Add",
-                                   command=lambda: [wn.destroy(), window.deiconify()])
+    add = customtkinter.CTkButton(frame_filters, text="Add New Team",
+                                  command=lambda: [add_team(cur, username, team_name_entry.get(), treeview_fantasy)])
     add.grid(row=6, column=0, padx=20, pady=(10, 10))
+
+    delete = customtkinter.CTkButton(frame_filters, text="Delete Team",
+                                     command=lambda: [delete_team(cur, username, treeview_fantasy)])
+    delete.grid(row=7, column=0, padx=20, pady=(10, 10))
 
     back = customtkinter.CTkButton(frame_filters, text="Back",
                                    command=lambda: [wn.destroy(), window.deiconify()])
-    back.grid(row=7, column=0, padx=20, pady=(10, 10))
+    back.grid(row=8, column=0, padx=20, pady=(10, 10))
+
+    user_fantasy_search(cur, username, treeview_fantasy)
 
     frame3.pack(anchor=tk.CENTER)
 
@@ -114,50 +76,41 @@ def open_create_fantasy(cnx, cur, root, window):
     wn.mainloop()
 
 
-def run_search(cur, year, position, p_name, t_name, treeview):
-    # where we should run search with given inputs
-    # filler = 0
-    print(year)
-    print(position)
-    print(p_name)
-    print(t_name)
-    input = ''
-    # empty string vs null
-    # if position == "Any Position":
-    # year_input = "0"
+def add_team(cur, username, team_name, treeview):
+    # should I check if it exists first or run and then handle error
+    cur.execute(f"CALL fantasy_team_add('{username}','{team_name}')")
+    user_fantasy_search(cur, username, treeview)
 
-    if year != "Any Year":
-        input += 'Y'
 
-    if position != "Any Position":
-        input += 'P'
+def delete_team(cur, username, treeview):
+    line_selected = treeview.item(treeview.focus())
+    team_name = line_selected['values'][0]
 
-    if p_name != "":
-        input += 'N'
+    cur.execute(f"CALL fantasy_team_delete('{username}','{team_name}')")
+    user_fantasy_search(cur, username, treeview)
 
-    if t_name != "Any Team":
-        input += 'T'
 
-    command = get_command(input, year, position, p_name, t_name)
-    cur.execute(command)
+def user_fantasy_search(cur, username, treeview):
+    cur.execute(f"CALL fantasy_team_search('{username}')")
     # cur.execute(f"CALL player_search('{p_name_input}', '{year_input}', '{position_input}', '{t_name_input}')")
-    df = pd.DataFrame({'player_name': pd.Series(dtype='str'),
-                       'season_year': pd.Series(dtype='str'),
-                       'position': pd.Series(dtype='str'),
-                       'team': pd.Series(dtype='str')})
+    df = pd.DataFrame({'team': pd.Series(dtype='str'),
+                       'players': pd.Series(dtype='str')})
+    
+    df_trimmed = pd.DataFrame({'team': pd.Series(dtype='str'),
+                               'players': pd.Series(dtype='str')})
     for row in cur.fetchall():
-        new_row = {'player_name': row['player'], 'season_year': row['season'],
-                   'position': row['pos'], 'team': row['tm']}
+        new_row = {'team': row['team_name'], 'players': row['player_count']}
         df.loc[len(df)] = new_row
 
     if not df.empty:
-        df_trimmed = df[["player_name", "season_year", "position", "team"]]
+        df_trimmed = df[["team", "players"]]
 
     for item in treeview.get_children():
         treeview.delete(item)
 
-    for index, row in df_trimmed.iterrows():
-        treeview.insert("", tk.END, values=list(row))
+    if not df_trimmed.empty:
+        for index, row in df_trimmed.iterrows():
+            treeview.insert("", tk.END, values=list(row))
 
 
 def on_closing(root):
@@ -165,36 +118,3 @@ def on_closing(root):
         # wn.destroy()
         root.destroy()
         quit
-
-
-def get_command(input, year, position, p_name, t_name):
-    if input == '':
-        return 'CALL generic_player_search()'
-    elif input == 'Y':
-        return f'CALL player_search_year({year})'
-    elif input == 'P':
-        return f'CALL player_search_pos("{position}")'
-    elif input == 'N':
-        return f'CALL player_search_name("{p_name}")'
-    elif input == 'T':
-        return f'CALL player_search_team("{t_name}")'
-    elif input == 'YP':
-        return f'CALL player_search_year_pos({year}, "{position}")'
-    elif input == 'YN':
-        return f'CALL player_search_year_name({year}, "{p_name}")'
-    elif input == 'YT':
-        return f'CALL player_search_year_team({year}, "{t_name}")'
-    elif input == 'PN':
-        return f'CALL player_search_pos_name("{position}", "{p_name}")'
-    elif input == 'PT':
-        return f'CALL player_search_pos_team("{position}", "{t_name}")'
-    elif input == 'NT':
-        return f'CALL player_search_name_team("{p_name}", "{t_name}")'
-    elif input == 'YPN':
-        return f'CALL player_search_year_pos_name({year}, "{position}", "{p_name}")'
-    elif input == 'YPT':
-        return f'CALL player_search_year_pos_team({year}, "{position}", "{t_name}")'
-    elif input == 'PNT':
-        return f'CALL player_search_pos_name_team("{position}", "{p_name}", "{t_name}")'
-    else:
-        return f'CALL player_search_all({year}, "{position}", "{p_name}", "{t_name}")'

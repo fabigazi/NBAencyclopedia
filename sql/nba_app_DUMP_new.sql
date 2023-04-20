@@ -84,11 +84,9 @@ DROP TABLE IF EXISTS `fantasy_teams`;
 CREATE TABLE `fantasy_teams` (
   `username` varchar(20) NOT NULL,
   `team_name` varchar(20) NOT NULL,
-  `players` int DEFAULT NULL,
+  `player_count` int DEFAULT NULL,
   PRIMARY KEY (`username`,`team_name`),
-  KEY `players` (`players`),
-  CONSTRAINT `fantasy_teams_ibfk_1` FOREIGN KEY (`username`) REFERENCES `user_table` (`username`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `fantasy_teams_ibfk_2` FOREIGN KEY (`players`) REFERENCES `player_table` (`player_id`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `fantasy_teams_ibfk_1` FOREIGN KEY (`username`) REFERENCES `user_table` (`username`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 

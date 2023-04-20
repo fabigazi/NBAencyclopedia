@@ -445,5 +445,37 @@ end ;;
 DELIMITER ;
 
 
+-- fantasy team procedures
+
+drop procedure if EXISTS fantasy_team_search;
+DELIMITER ;;
+CREATE PROCEDURE fantasy_team_search (username_in varchar(50))
+BEGIN
+	SELECT team_name, player_count FROM nba_app.fantasy_teams
+    WHERE
+    username = username_in
+		ORDER BY team_name ASC;
+end ;;
+DELIMITER ;
+
+drop procedure if EXISTS fantasy_team_add;
+DELIMITER ;;
+CREATE PROCEDURE fantasy_team_add (username_in varchar(50), team_name_in varchar(50))
+BEGIN
+	INSERT INTO nba_app.fantasy_teams (username, team_name, player_count)
+	VALUES (username_in, team_name_in, 0);
+end ;;
+DELIMITER ;
+
+drop procedure if EXISTS fantasy_team_delete;
+DELIMITER ;;
+CREATE PROCEDURE fantasy_team_delete (username_in varchar(50), team_name_in varchar(50))
+BEGIN
+	DELETE FROM nba_app.fantasy_teams WHERE username=username_in AND team_name = team_name_in;
+end ;;
+DELIMITER ;
+
+
+
     
     

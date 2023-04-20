@@ -6,6 +6,8 @@ from tkinter import *
 from tkinter import messagebox, ttk
 import pandas as pd
 
+from windows.populate_dds import *
+
 customtkinter.set_appearance_mode("Light")  # Modes: "System" (standard), "Dark", "Light"
 customtkinter.set_default_color_theme("dark-blue")  # Themes: "blue" (standard), "green", "dark-blue"
 
@@ -18,23 +20,11 @@ def open_player_search(cnx, cur, root, window):
     frame3 = Frame(wn)
 
     # load Drop-downs
-    year_drop_down = ["Any Year"]
-    cur.execute('CALL player_search_years_drop_down()')
+    year_drop_down = load_season_dd(cur)
 
-    for row in cur.fetchall():
-        year_drop_down.append(str(row['season']))
+    position_drop_down = load_position_dd(cur)
 
-    position_drop_down = ["Any Position"]
-    cur.execute('CALL player_search_position_drop_down()')
-
-    for row in cur.fetchall():
-        position_drop_down.append(str(row['pos']))
-
-    team_drop_down = ["Any Team"]
-    cur.execute('CALL player_search_team_drop_down()')
-
-    for row in cur.fetchall():
-        team_drop_down.append(str(row['abbreviation']))
+    team_drop_down = load_team_dd(cur)
 
     # Set window specifications and location
     window_width = 1100
