@@ -34,7 +34,7 @@ def open_player_search(cnx, cur, root, window):
     cur.execute('CALL player_search_team_drop_down()')
 
     for row in cur.fetchall():
-        team_drop_down.append(str(row['tm']))
+        team_drop_down.append(str(row['abbreviation']))
 
     # Set window specifications and location
     window_width = 1100

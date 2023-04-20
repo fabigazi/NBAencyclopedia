@@ -47,16 +47,32 @@ CREATE PROCEDURE player_search (player_in varchar(50), season_in int, pos_in cha
 BEGIN
 IF (season_in = 0 ) THEN
 	SELECT 
-		player, season, pos, tm
+		player.player, season.season, stats.pos, stats.tm
 	FROM
-		nba_app.player_final
+		nba_app.player_stats as stats
+	JOIN 
+		nba_app.player_table as player
+	ON
+		stats.player_id = player.player_id
+	JOIN 
+		nba_app.season_table as season
+	ON 
+		season.seas_id = stats.seas_id
 	ORDER BY player, season;
 ELSE
 	SELECT 
-		player, season, pos, tm
+		player.player, season.season, stats.pos, stats.tm
 	FROM
-		nba_app.player_final
-	WHERE
+		nba_app.player_stats as stats
+	JOIN 
+		nba_app.player_table as player
+	ON
+		stats.player_id = player.player_id
+	JOIN 
+		nba_app.season_table as season
+	ON 
+		season.seas_id = stats.seas_id
+	where
 		season = season_in
 	ORDER BY player, season;
 END IF; 
@@ -67,8 +83,19 @@ drop procedure if EXISTS generic_player_search;
 DELIMITER ;;
 CREATE PROCEDURE generic_player_search ()
 BEGIN
-	SELECT player, season, pos, tm FROM nba_app.player_final
-		ORDER BY player, season;
+	SELECT 
+		player.player, season.season, stats.pos, stats.tm
+	FROM
+		nba_app.player_stats as stats
+	JOIN 
+		nba_app.player_table as player
+	ON
+		stats.player_id = player.player_id
+	JOIN 
+		nba_app.season_table as season
+	ON 
+		season.seas_id = stats.seas_id
+	ORDER BY player, season;
 end ;;
 DELIMITER ;
 
@@ -76,9 +103,21 @@ drop procedure if EXISTS player_search_year;
 DELIMITER ;;
 CREATE PROCEDURE player_search_year (season_in int)
 BEGIN
-	SELECT player, season, pos, tm FROM nba_app.player_final
-		WHERE season = season_in
-		ORDER BY player;
+	SELECT 
+		player.player, season.season, stats.pos, stats.tm
+	FROM
+		nba_app.player_stats as stats
+	JOIN 
+		nba_app.player_table as player
+	ON
+		stats.player_id = player.player_id
+	JOIN 
+		nba_app.season_table as season
+	ON 
+		season.seas_id = stats.seas_id
+	where
+		season = season_in
+	ORDER BY player, season;
 end ;;
 DELIMITER ;
 
@@ -86,9 +125,21 @@ drop procedure if EXISTS player_search_pos;
 DELIMITER ;;
 CREATE PROCEDURE player_search_pos (pos_in varchar(50))
 BEGIN
-	SELECT player, season, pos, tm FROM nba_app.player_final
-		WHERE pos = pos_in
-		ORDER BY player;
+SELECT 
+		player.player, season.season, stats.pos, stats.tm
+	FROM
+		nba_app.player_stats as stats
+	JOIN 
+		nba_app.player_table as player
+	ON
+		stats.player_id = player.player_id
+	JOIN 
+		nba_app.season_table as season
+	ON 
+		season.seas_id = stats.seas_id
+	where
+		pos = pos_in
+	ORDER BY player;
 end ;;
 DELIMITER ;
 
@@ -98,9 +149,21 @@ drop procedure if EXISTS player_search_name;
 DELIMITER ;;
 CREATE PROCEDURE player_search_name (name_in varchar(50))
 BEGIN
-	SELECT player, season, pos, tm FROM nba_app.player_final
-		WHERE player = name_in
-		ORDER BY season DESC;
+SELECT 
+		player.player, season.season, stats.pos, stats.tm
+	FROM
+		nba_app.player_stats as stats
+	JOIN 
+		nba_app.player_table as player
+	ON
+		stats.player_id = player.player_id
+	JOIN 
+		nba_app.season_table as season
+	ON 
+		season.seas_id = stats.seas_id
+	where
+		player = name_in
+	ORDER BY season DESC;
 end ;;
 DELIMITER ;
 
@@ -108,9 +171,21 @@ drop procedure if EXISTS player_search_team;
 DELIMITER ;;
 CREATE PROCEDURE player_search_team (team_in varchar(50))
 BEGIN
-	SELECT player, season, pos, tm FROM nba_app.player_final
-		WHERE tm = team_in
-		ORDER BY season DESC, player;
+SELECT 
+		player.player, season.season, stats.pos, stats.tm
+	FROM
+		nba_app.player_stats as stats
+	JOIN 
+		nba_app.player_table as player
+	ON
+		stats.player_id = player.player_id
+	JOIN 
+		nba_app.season_table as season
+	ON 
+		season.seas_id = stats.seas_id
+	where
+		tm = team_in
+	ORDER BY season DESC, player;
 end ;;
 DELIMITER ;
 
@@ -118,9 +193,21 @@ drop procedure if EXISTS player_search_year_pos;
 DELIMITER ;;
 CREATE PROCEDURE player_search_year_pos (season_in int, pos_in varchar(50))
 BEGIN
-	SELECT player, season, pos, tm FROM nba_app.player_final
-		WHERE season = season_in AND pos = pos_in
-		ORDER BY player;
+	SELECT 
+		player.player, season.season, stats.pos, stats.tm
+	FROM
+		nba_app.player_stats as stats
+	JOIN 
+		nba_app.player_table as player
+	ON
+		stats.player_id = player.player_id
+	JOIN 
+		nba_app.season_table as season
+	ON 
+		season.seas_id = stats.seas_id
+	WHERE 
+		season = season_in AND pos = pos_in
+	ORDER BY player;
 end ;;
 DELIMITER ;
 
@@ -128,9 +215,21 @@ drop procedure if EXISTS player_search_year_name;
 DELIMITER ;;
 CREATE PROCEDURE player_search_year_name (season_in int, name_in varchar(50))
 BEGIN
-	SELECT player, season, pos, tm FROM nba_app.player_final
-		WHERE season = season_in AND player = name_in
-		ORDER BY player;
+	SELECT 
+		player.player, season.season, stats.pos, stats.tm
+	FROM
+		nba_app.player_stats as stats
+	JOIN 
+		nba_app.player_table as player
+	ON
+		stats.player_id = player.player_id
+	JOIN 
+		nba_app.season_table as season
+	ON 
+		season.seas_id = stats.seas_id
+	WHERE 
+		season = season_in AND player = name_in
+	ORDER BY player;
 end ;;
 DELIMITER ;
 
@@ -138,9 +237,21 @@ drop procedure if EXISTS player_search_year_team;
 DELIMITER ;;
 CREATE PROCEDURE player_search_year_team (season_in int, team_in varchar(50))
 BEGIN
-	SELECT player, season, pos, tm FROM nba_app.player_final
-		WHERE season = season_in AND tm = team_in
-		ORDER BY player DESC;
+SELECT 
+		player.player, season.season, stats.pos, stats.tm
+	FROM
+		nba_app.player_stats as stats
+	JOIN 
+		nba_app.player_table as player
+	ON
+		stats.player_id = player.player_id
+	JOIN 
+		nba_app.season_table as season
+	ON 
+		season.seas_id = stats.seas_id
+	WHERE 
+		season = season_in AND tm = team_in
+	ORDER BY player DESC;
 end ;;
 DELIMITER ;
 
@@ -148,9 +259,21 @@ drop procedure if EXISTS player_search_pos_name;
 DELIMITER ;;
 CREATE PROCEDURE player_search_pos_name (pos_in VARCHAR(50), name_in varchar(50))
 BEGIN
-	SELECT player, season, pos, tm FROM nba_app.player_final
-		WHERE pos = pos_in AND player = name_in
-		ORDER BY season DESC;
+SELECT 
+		player.player, season.season, stats.pos, stats.tm
+	FROM
+		nba_app.player_stats as stats
+	JOIN 
+		nba_app.player_table as player
+	ON
+		stats.player_id = player.player_id
+	JOIN 
+		nba_app.season_table as season
+	ON 
+		season.seas_id = stats.seas_id
+	WHERE 
+		pos = pos_in AND player = name_in
+	ORDER BY season DESC;
 end ;;
 DELIMITER ;
 
@@ -158,9 +281,21 @@ drop procedure if EXISTS player_search_pos_team;
 DELIMITER ;;
 CREATE PROCEDURE player_search_pos_team (pos_in VARCHAR(50), team_in varchar(50))
 BEGIN
-	SELECT player, season, pos, tm FROM nba_app.player_final
-		WHERE pos = pos_in AND tm = team_in
-		ORDER BY player DESC;
+SELECT 
+		player.player, season.season, stats.pos, stats.tm
+	FROM
+		nba_app.player_stats as stats
+	JOIN 
+		nba_app.player_table as player
+	ON
+		stats.player_id = player.player_id
+	JOIN 
+		nba_app.season_table as season
+	ON 
+		season.seas_id = stats.seas_id
+	WHERE 
+		pos = pos_in AND tm = team_in
+	ORDER BY player DESC;
 end ;;
 DELIMITER ;
 
@@ -168,9 +303,21 @@ drop procedure if EXISTS player_search_name_team;
 DELIMITER ;;
 CREATE PROCEDURE player_search_name_team (name_in varchar(50), team_in varchar(50))
 BEGIN
-	SELECT player, season, pos, tm FROM nba_app.player_final
-		WHERE player = name_in AND tm = team_in
-		ORDER BY season DESC;
+SELECT 
+		player.player, season.season, stats.pos, stats.tm
+	FROM
+		nba_app.player_stats as stats
+	JOIN 
+		nba_app.player_table as player
+	ON
+		stats.player_id = player.player_id
+	JOIN 
+		nba_app.season_table as season
+	ON 
+		season.seas_id = stats.seas_id
+	WHERE 
+		player = name_in AND tm = team_in
+	ORDER BY season DESC;
 end ;;
 DELIMITER ;
 
@@ -178,9 +325,21 @@ drop procedure if EXISTS player_search_year_pos_name;
 DELIMITER ;;
 CREATE PROCEDURE player_search_year_pos_name (season_in int, pos_in VARCHAR(50), name_in varchar(50))
 BEGIN
-	SELECT player, season, pos, tm FROM nba_app.player_final
-		WHERE season = season_in AND pos = pos_in AND player = name_in
-		ORDER BY season DESC;
+SELECT 
+		player.player, season.season, stats.pos, stats.tm
+	FROM
+		nba_app.player_stats as stats
+	JOIN 
+		nba_app.player_table as player
+	ON
+		stats.player_id = player.player_id
+	JOIN 
+		nba_app.season_table as season
+	ON 
+		season.seas_id = stats.seas_id
+	WHERE 
+		season = season_in AND pos = pos_in AND player = name_in
+	ORDER BY season DESC;
 end ;;
 DELIMITER ;
 
@@ -188,9 +347,21 @@ drop procedure if EXISTS player_search_year_pos_team;
 DELIMITER ;;
 CREATE PROCEDURE player_search_year_pos_team (season_in int, pos_in VARCHAR(50), team_in varchar(50))
 BEGIN
-	SELECT player, season, pos, tm FROM nba_app.player_final
-		WHERE season = season_in AND pos = pos_in AND tm = team_in
-		ORDER BY season DESC;
+SELECT 
+		player.player, season.season, stats.pos, stats.tm
+	FROM
+		nba_app.player_stats as stats
+	JOIN 
+		nba_app.player_table as player
+	ON
+		stats.player_id = player.player_id
+	JOIN 
+		nba_app.season_table as season
+	ON 
+		season.seas_id = stats.seas_id
+	WHERE 
+		season = season_in AND pos = pos_in AND tm = team_in
+	ORDER BY season DESC;
 end ;;
 DELIMITER ;
 
@@ -198,9 +369,21 @@ drop procedure if EXISTS player_search_pos_name_team;
 DELIMITER ;;
 CREATE PROCEDURE player_search_pos_name_team (pos_in VARCHAR(50), name_in varchar(50), team_in varchar(50))
 BEGIN
-	SELECT player, season, pos, tm FROM nba_app.player_final
-		WHERE pos = pos_in AND player = name_in AND tm = team_in
-		ORDER BY season DESC;
+SELECT 
+		player.player, season.season, stats.pos, stats.tm
+	FROM
+		nba_app.player_stats as stats
+	JOIN 
+		nba_app.player_table as player
+	ON
+		stats.player_id = player.player_id
+	JOIN 
+		nba_app.season_table as season
+	ON 
+		season.seas_id = stats.seas_id
+	WHERE 
+		pos = pos_in AND player = name_in AND tm = team_in
+	ORDER BY season DESC;
 end ;;
 DELIMITER ;
 
@@ -208,9 +391,21 @@ drop procedure if EXISTS player_search_all;
 DELIMITER ;;
 CREATE PROCEDURE player_search_all (season_in int, pos_in VARCHAR(50), name_in varchar(50), team_in varchar(50))
 BEGIN
-	SELECT player, season, pos, tm FROM nba_app.player_final
-		WHERE season = season_in AND pos = pos_in AND player = name_in AND tm = team_in
-		ORDER BY season DESC;
+SELECT 
+		player.player, season.season, stats.pos, stats.tm
+	FROM
+		nba_app.player_stats as stats
+	JOIN 
+		nba_app.player_table as player
+	ON
+		stats.player_id = player.player_id
+	JOIN 
+		nba_app.season_table as season
+	ON 
+		season.seas_id = stats.seas_id
+	WHERE 
+		season = season_in AND pos = pos_in AND player = name_in AND tm = team_in
+	ORDER BY season DESC;
 end ;;
 DELIMITER ;
 
@@ -220,8 +415,11 @@ drop procedure if EXISTS player_search_years_drop_down;
 DELIMITER ;;
 CREATE PROCEDURE player_search_years_drop_down ()
 BEGIN
-	SELECT Distinct season FROM nba_app.player_final
-		ORDER BY season DESC;
+	SELECT DISTINCT
+		season
+	FROM
+		nba_app.season_table
+	ORDER BY season DESC;
 end ;;
 DELIMITER ;
 
@@ -229,8 +427,11 @@ drop procedure if EXISTS player_search_position_drop_down;
 DELIMITER ;;
 CREATE PROCEDURE player_search_position_drop_down ()
 BEGIN
-	SELECT Distinct pos FROM nba_app.player_final
-		ORDER BY pos DESC;
+SELECT 
+		DISTINCT pos
+	FROM
+		nba_app.player_stats
+	ORDER BY pos ASC;
 end ;;
 DELIMITER ;
 
@@ -238,8 +439,8 @@ drop procedure if EXISTS player_search_team_drop_down;
 DELIMITER ;;
 CREATE PROCEDURE player_search_team_drop_down ()
 BEGIN
-	SELECT Distinct tm FROM nba_app.player_final
-		ORDER BY tm DESC;
+	SELECT Distinct abbreviation FROM nba_app.team_table
+		ORDER BY abbreviation ASC;
 end ;;
 DELIMITER ;
 
