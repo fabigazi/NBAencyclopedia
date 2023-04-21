@@ -20,9 +20,7 @@ def open_add_to_fantasy(username, team_name, cnx, cur, root, window, old_treevie
     frame3 = Frame(wn)
 
     # load Drop-downs
-    year_drop_down = load_season_dd(cur)
-
-    position_drop_down = load_position_dd(cur)
+    position_drop_down = load_position_dd_2(cur)
 
     team_drop_down = load_team_dd(cur)
 
@@ -136,6 +134,8 @@ def open_add_to_fantasy(username, team_name, cnx, cur, root, window, old_treevie
 
     user_team_select(cur, username, team_name, treeview_fantasy)
 
+    run_search(cur, 2023, "Any Position", "", "Any Team", treeview_search)
+
     frame3.pack(anchor=tk.CENTER)
 
     wn.protocol("WM_DELETE_WINDOW", lambda: [wn.destroy(), window.deiconify()])
@@ -173,20 +173,17 @@ def run_search(cur, year, position, p_name, t_name, treeview):
                        'season_year': pd.Series(dtype='str'),
                        'position': pd.Series(dtype='str'),
                        'team': pd.Series(dtype='str')})
-    for row in cur.fetchall():
-        new_row = {'player_name': row['player'], 'season_year': row['season'],
-                   'position': row['pos'], 'team': row['tm']}
-        df.loc[len(df)] = new_row
-
-    if not df.empty:
-        df_trimmed = df[["player_name", "season_year", "position", "team"]]
 
     for item in treeview.get_children():
         treeview.delete(item)
-
-    for index, row in df_trimmed.iterrows():
-        treeview.insert("", tk.END, values=list(row))
-
+    fetch = cur.fetchall()
+    if fetch:
+        for row in fetch:
+            new_row = [row['player'], row['season'],
+                        row['pos'],  row['tm']]
+            treeview.insert("", tk.END, values=list(new_row))
+    else:
+        messagebox.showerror(title='No Player Sel', message='Given Entry does not exist in this DB')
 
 def on_closing(root):
     if messagebox.askokcancel("Quit", "Do you want to quit?"):
@@ -237,19 +234,16 @@ def user_fantasy_add_update(cur, username, old_treeview):
 
     df_trimmed = pd.DataFrame({'team': pd.Series(dtype='str'),
                                'players': pd.Series(dtype='str')})
-    for row in cur.fetchall():
-        new_row = {'team': row['team_name'], 'players': row['player_count']}
-        df.loc[len(df)] = new_row
-
-    if not df.empty:
-        df_trimmed = df[["team", "players"]]
-
     for item in old_treeview.get_children():
         old_treeview.delete(item)
 
-    if not df_trimmed.empty:
-        for index, row in df_trimmed.iterrows():
-            old_treeview.insert("", tk.END, values=list(row))
+    fetch = cur.fetchall()
+    if fetch:
+        for row in fetch:
+            new_row = [row['team_name'], row['player_count']]
+            old_treeview.insert("", tk.END, values=list(new_row))
+    else:
+        messagebox.showerror(title='No Player Sel', message='Given Entry does not exist in this DB')
 
 
 # deletes a player from the team

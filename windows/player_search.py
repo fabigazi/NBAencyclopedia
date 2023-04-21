@@ -1,5 +1,4 @@
 
-
 import customtkinter
 import tkinter as tk
 from tkinter import *
@@ -40,21 +39,30 @@ def open_player_search(cnx, cur, root, window):
     df = pd.DataFrame({'player_name': pd.Series(dtype='str'),
                        'season_year': pd.Series(dtype='str'),
                        'position': pd.Series(dtype='str'),
-                       'team': pd.Series(dtype='str')})
+                       'team': pd.Series(dtype='str'),
+                       'points_pg': pd.Series(dtype='str'),
+                       'free_throw': pd.Series(dtype='str'),
+                       'rebounds': pd.Series(dtype='str'),
+                       'assists': pd.Series(dtype='str')})
 
-    df = df[['player_name', 'season_year', 'position', 'team']]
+    df = df[['player_name', 'season_year', 'position', 'team', 'points_pg', 'free_throw', 'rebounds', 'assists']]
     df = df.rename(
-        columns={'player_name': 'Name', 'season_year': 'Year', 'position': 'Position', 'team': 'Team'})
+        columns={'player_name': 'Name', 'season_year': 'Year', 'position': 'Pos', 'team': 'Team',
+                 'points_pg': 'Points', 'free_throw': 'FT %', 'rebounds': 'REB', 'assists': 'Assists'})
 
     # tree view frame
     treeview_frame = ttk.Treeview(frame3, height=18, padding=1, show="headings")
     treeview_frame.grid(row=0, column=1, padx=(20, 0), pady=(20, 0), sticky="nsew")
     treeview_frame['columns'] = list(df.columns)
 
-    treeview_frame.column("# 1", stretch=NO, width=150)
-    treeview_frame.column("# 2", stretch=NO, width=150)
-    treeview_frame.column("# 3", stretch=NO, width=150)
-    treeview_frame.column("# 4", stretch=NO, width=150)
+    treeview_frame.column("# 1", stretch=NO, width=100)
+    treeview_frame.column("# 2", stretch=NO, width=50)
+    treeview_frame.column("# 3", stretch=NO, width=50)
+    treeview_frame.column("# 4", stretch=NO, width=50)
+    treeview_frame.column("# 5", stretch=NO, width=50)
+    treeview_frame.column("# 6", stretch=NO, width=50)
+    treeview_frame.column("# 7", stretch=NO, width=50)
+    treeview_frame.column("# 8", stretch=NO, width=50)
 
     # Create heading columns
     for column in df.columns:
@@ -98,6 +106,8 @@ def open_player_search(cnx, cur, root, window):
                                    command=lambda: [wn.destroy(), window.deiconify()])
     back.grid(row=6, column=0, padx=20, pady=(10, 10))
 
+    run_search(cur, "Any Year", "Any Position", "", "Any Team", treeview_frame)
+
     frame3.pack(anchor=tk.CENTER)
 
     wn.protocol("WM_DELETE_WINDOW", lambda: [wn.destroy(), window.deiconify()])
@@ -134,20 +144,26 @@ def run_search(cur, year, position, p_name, t_name, treeview):
     df = pd.DataFrame({'player_name': pd.Series(dtype='str'),
                        'season_year': pd.Series(dtype='str'),
                        'position': pd.Series(dtype='str'),
-                       'team': pd.Series(dtype='str')})
-    for row in cur.fetchall():
-        new_row = {'player_name': row['player'], 'season_year': row['season'],
-                   'position': row['pos'], 'team': row['tm']}
-        df.loc[len(df)] = new_row
-
-    if not df.empty:
-        df_trimmed = df[["player_name", "season_year", "position", "team"]]
-
+                       'team': pd.Series(dtype='str'),
+                       'points_pg': pd.Series(dtype='str'),
+                       'free_throw': pd.Series(dtype='str'),
+                       'rebounds': pd.Series(dtype='str'),
+                       'assists': pd.Series(dtype='str')})
     for item in treeview.get_children():
         treeview.delete(item)
+    fetch = cur.fetchall()
+    if fetch:
+        for row in fetch:
+            new_row = [row['player'], row['season'],
+                        row['pos'],  row['tm'],  row['pts_per_game'],
+                        row['ft_percent'],  row['trb_per_game'], row['ast_per_game']]
+            treeview.insert("", tk.END, values=list(new_row))
+    else:
+        messagebox.showerror(title='No Player Sel', message='Given Entry does not exist in this DB')
 
-    for index, row in df_trimmed.iterrows():
-        treeview.insert("", tk.END, values=list(row))
+
+
+
 
 
 def on_closing(root):

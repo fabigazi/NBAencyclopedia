@@ -87,6 +87,8 @@ def allstar_search(cnx, cur, root, window):
 
     frame.pack(anchor=tk.CENTER)
 
+    run_search(cur, "Any Year", "Any Team", treeview_frame)
+
     wn.protocol("WM_DELETE_WINDOW", lambda: [wn.destroy(), window.deiconify()])
     wn.mainloop()
 

@@ -24,6 +24,16 @@ def load_position_dd(cur):
     return position_drop_down
 
 
+def load_position_dd_2(cur):
+    position_drop_down = ["Any Position"]
+    cur.execute('CALL player_search_position_drop_down_two(2023)')
+
+    for row in cur.fetchall():
+        position_drop_down.append(str(row['pos']))
+
+    return position_drop_down
+
+
 def load_team_dd(cur):
     team_drop_down = ["Any Team"]
     cur.execute('CALL player_search_team_drop_down()')

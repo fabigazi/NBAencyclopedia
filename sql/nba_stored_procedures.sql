@@ -84,7 +84,7 @@ DELIMITER ;;
 CREATE PROCEDURE generic_player_search ()
 BEGIN
 	SELECT 
-		player.player, season.season, stats.pos, stats.tm
+		player.player, season.season, stats.pos, stats.tm, stats.pts_per_game, stats.ft_percent, stats.trb_per_game, stats.ast_per_game
 	FROM
 		nba_app.player_stats as stats
 	JOIN 
@@ -104,7 +104,7 @@ DELIMITER ;;
 CREATE PROCEDURE player_search_year (season_in int)
 BEGIN
 	SELECT 
-		player.player, season.season, stats.pos, stats.tm
+		player.player, season.season, stats.pos, stats.tm, stats.pts_per_game, stats.ft_percent, stats.trb_per_game, stats.ast_per_game
 	FROM
 		nba_app.player_stats as stats
 	JOIN 
@@ -126,7 +126,7 @@ DELIMITER ;;
 CREATE PROCEDURE player_search_pos (pos_in varchar(50))
 BEGIN
 SELECT 
-		player.player, season.season, stats.pos, stats.tm
+		player.player, season.season, stats.pos, stats.tm, stats.pts_per_game, stats.ft_percent, stats.trb_per_game, stats.ast_per_game
 	FROM
 		nba_app.player_stats as stats
 	JOIN 
@@ -148,7 +148,7 @@ DELIMITER ;;
 CREATE PROCEDURE player_search_name (name_in varchar(50))
 BEGIN
 SELECT 
-		player.player, season.season, stats.pos, stats.tm
+		player.player, season.season, stats.pos, stats.tm, stats.pts_per_game, stats.ft_percent, stats.trb_per_game, stats.ast_per_game
 	FROM
 		nba_app.player_stats as stats
 	JOIN 
@@ -170,7 +170,7 @@ DELIMITER ;;
 CREATE PROCEDURE player_search_team (team_in varchar(50))
 BEGIN
 SELECT 
-		player.player, season.season, stats.pos, stats.tm
+		player.player, season.season, stats.pos, stats.tm, stats.pts_per_game, stats.ft_percent, stats.trb_per_game, stats.ast_per_game
 	FROM
 		nba_app.player_stats as stats
 	JOIN 
@@ -192,7 +192,7 @@ DELIMITER ;;
 CREATE PROCEDURE player_search_year_pos (season_in int, pos_in varchar(50))
 BEGIN
 	SELECT 
-		player.player, season.season, stats.pos, stats.tm
+		player.player, season.season, stats.pos, stats.tm, stats.pts_per_game, stats.ft_percent, stats.trb_per_game, stats.ast_per_game
 	FROM
 		nba_app.player_stats as stats
 	JOIN 
@@ -214,7 +214,7 @@ DELIMITER ;;
 CREATE PROCEDURE player_search_year_name (season_in int, name_in varchar(50))
 BEGIN
 	SELECT 
-		player.player, season.season, stats.pos, stats.tm
+		player.player, season.season, stats.pos, stats.tm, stats.pts_per_game, stats.ft_percent, stats.trb_per_game, stats.ast_per_game
 	FROM
 		nba_app.player_stats as stats
 	JOIN 
@@ -236,7 +236,7 @@ DELIMITER ;;
 CREATE PROCEDURE player_search_year_team (season_in int, team_in varchar(50))
 BEGIN
 SELECT 
-		player.player, season.season, stats.pos, stats.tm
+		player.player, season.season, stats.pos, stats.tm, stats.pts_per_game, stats.ft_percent, stats.trb_per_game, stats.ast_per_game
 	FROM
 		nba_app.player_stats as stats
 	JOIN 
@@ -258,7 +258,7 @@ DELIMITER ;;
 CREATE PROCEDURE player_search_pos_name (pos_in VARCHAR(50), name_in varchar(50))
 BEGIN
 SELECT 
-		player.player, season.season, stats.pos, stats.tm
+		player.player, season.season, stats.pos, stats.tm, stats.pts_per_game, stats.ft_percent, stats.trb_per_game, stats.ast_per_game
 	FROM
 		nba_app.player_stats as stats
 	JOIN 
@@ -280,7 +280,7 @@ DELIMITER ;;
 CREATE PROCEDURE player_search_pos_team (pos_in VARCHAR(50), team_in varchar(50))
 BEGIN
 SELECT 
-		player.player, season.season, stats.pos, stats.tm
+		player.player, season.season, stats.pos, stats.tm, stats.pts_per_game, stats.ft_percent, stats.trb_per_game, stats.ast_per_game
 	FROM
 		nba_app.player_stats as stats
 	JOIN 
@@ -302,7 +302,7 @@ DELIMITER ;;
 CREATE PROCEDURE player_search_name_team (name_in varchar(50), team_in varchar(50))
 BEGIN
 SELECT 
-		player.player, season.season, stats.pos, stats.tm
+		player.player, season.season, stats.pos, stats.tm, stats.pts_per_game, stats.ft_percent, stats.trb_per_game, stats.ast_per_game
 	FROM
 		nba_app.player_stats as stats
 	JOIN 
@@ -324,7 +324,7 @@ DELIMITER ;;
 CREATE PROCEDURE player_search_year_pos_name (season_in int, pos_in VARCHAR(50), name_in varchar(50))
 BEGIN
 SELECT 
-		player.player, season.season, stats.pos, stats.tm
+		player.player, season.season, stats.pos, stats.tm, stats.pts_per_game, stats.ft_percent, stats.trb_per_game, stats.ast_per_game
 	FROM
 		nba_app.player_stats as stats
 	JOIN 
@@ -346,7 +346,7 @@ DELIMITER ;;
 CREATE PROCEDURE player_search_year_pos_team (season_in int, pos_in VARCHAR(50), team_in varchar(50))
 BEGIN
 SELECT 
-		player.player, season.season, stats.pos, stats.tm
+		player.player, season.season, stats.pos, stats.tm, stats.pts_per_game, stats.ft_percent, stats.trb_per_game, stats.ast_per_game
 	FROM
 		nba_app.player_stats as stats
 	JOIN 
@@ -368,7 +368,7 @@ DELIMITER ;;
 CREATE PROCEDURE player_search_pos_name_team (pos_in VARCHAR(50), name_in varchar(50), team_in varchar(50))
 BEGIN
 SELECT 
-		player.player, season.season, stats.pos, stats.tm
+		player.player, season.season, stats.pos, stats.tm, stats.pts_per_game, stats.ft_percent, stats.trb_per_game, stats.ast_per_game
 	FROM
 		nba_app.player_stats as stats
 	JOIN 
@@ -390,7 +390,7 @@ DELIMITER ;;
 CREATE PROCEDURE player_search_all (season_in int, pos_in VARCHAR(50), name_in varchar(50), team_in varchar(50))
 BEGIN
 SELECT 
-		player.player, season.season, stats.pos, stats.tm
+		player.player, season.season, stats.pos, stats.tm, stats.pts_per_game, stats.ft_percent, stats.trb_per_game, stats.ast_per_game
 	FROM
 		nba_app.player_stats as stats
 	JOIN 
@@ -429,6 +429,24 @@ SELECT
 		DISTINCT pos
 	FROM
 		nba_app.player_stats
+	ORDER BY pos ASC;
+end ;;
+DELIMITER ;
+
+drop procedure if EXISTS player_search_position_drop_down_two;
+DELIMITER ;;
+CREATE PROCEDURE player_search_position_drop_down_two (season_in int)
+BEGIN
+	SELECT 
+		DISTINCT pos
+	FROM
+		nba_app.player_stats as stats
+	Join
+		nba_app.season_table as seas
+	ON 
+		stats.seas_id = seas.seas_id
+	WHERE
+		season = season_in
 	ORDER BY pos ASC;
 end ;;
 DELIMITER ;
@@ -556,8 +574,6 @@ WHERE
     AND player_id = player_id_in;
 end ;;
 DELIMITER ;
-
--- CALL fantasy_players_add ('test', 'test', 1);
 
 drop procedure if EXISTS player_to_player_id;
 DELIMITER ;;
