@@ -613,20 +613,18 @@ DELIMITER ;
 
 drop procedure if EXISTS fantasy_team_roster_search;
 DELIMITER ;;
-CREATE PROCEDURE fantasy_team_roster_search(username_in VARCHAR(50), team_in VARCHAR(50))
+CREATE PROCEDURE fantasy_team_roster_search(team_in VARCHAR(50))
 BEGIN
 	SELECT pt.player, stats.pos, stats.tm, stats.pts_per_game, stats.ft_percent, stats.trb_per_game, stats.ast_per_game
 		FROM player_table AS pt
 			JOIN fantasy_players AS fp ON pt.player_id = fp.player_id
             JOIN player_stats AS stats ON pt.player_id = stats.player_id
             
-		WHERE username = username_in AND team_name = team_in AND seas_id = 7
+		WHERE team_name = team_in AND seas_id = 7
             
 	ORDER BY player DESC;
 end ;;
 DELIMITER ;
-
-CALL fantasy_team_roster_search('test');
 
 -- end of season teams procedures
 

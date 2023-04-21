@@ -21,6 +21,7 @@ def get_user_input():
 
     return username, password
 
+
 def username_exists(cur, username):
     cur.execute(f"SELECT * FROM user_table WHERE username = '{username}'")
     if cur.fetchall():
@@ -103,7 +104,7 @@ def login(cnx, cur, root, username, password):
     return
 
 
-def register_confirm(cur, window, first_name, last_name, username, password, password_confirm):
+def register_confirm(cur, cnx, window, first_name, last_name, username, password, password_confirm):
     if not first_name or not last_name or not username or not password or not password_confirm:
         messagebox.showwarning(title='Missing Information', message='Please Ensure All Fields Are Filled')
     elif password != password_confirm:
@@ -114,11 +115,12 @@ def register_confirm(cur, window, first_name, last_name, username, password, pas
                                  message='Username already exists, please select a different one')
         else:
             cur.execute(f"CALL create_username('{username}', '{first_name}', '{last_name}', '{password}')")
+            cnx.commit()
             messagebox.showinfo(title='Success!', message='Account successfully created')
             window.destroy()
 
 
-def register(cur, root):
+def register(cur, cnx, root):
     # Create new window
     wn = Toplevel(root)
 
@@ -147,7 +149,7 @@ def register(cur, root):
     password_confirm_label = ctk.CTkLabel(frame2, text='Confirm Password', font=('Arial', 14))
     password_confirm_entry = ctk.CTkEntry(frame2, show='*')
     create_account_button = ctk.CTkButton(frame2, text='Create Account', font=('Arial', 14),
-                                          command=lambda: register_confirm(cur, wn, first_name_entry.get(),
+                                          command=lambda: register_confirm(cur, cnx, wn, first_name_entry.get(),
                                                                            last_name_entry.get(),
                                                                            username_entry.get(), password_entry.get(),
                                                                            password_confirm_entry.get()))
@@ -186,7 +188,7 @@ def start_screen(cnx, cur, root):
     login_button = ctk.CTkButton(frame, text='Login', font=('Arial', 14),
                                  command=lambda: [login(cnx, cur, root, username_entry.get(), password_entry.get())])
     register_button = ctk.CTkButton(frame, text='Register', font=('Arial', 14),
-                                    command=lambda: [register(cur, root), cnx.commit()])
+                                    command=lambda: [register(cur, cnx, root), cnx.commit()])
     logo = ImageTk.PhotoImage(Image.open('nba_logo.png'))
     logo_label = tk.Label(frame, image=logo)
     logo_label.image = logo
@@ -213,7 +215,6 @@ def start_screen(cnx, cur, root):
 
 
 def main():
-
     # get mySQL username and password from user
     username, password = get_user_input()
 

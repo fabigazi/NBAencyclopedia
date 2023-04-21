@@ -47,7 +47,7 @@ def open_team_search(cnx, cur, root, window):
 
     df = df[['team', 'player', 'season_year']]
     df = df.rename(
-        columns={'team' : 'Team', 'player': 'Player', 'season_year': 'Year'})
+        columns={'team': 'Team', 'player': 'Player', 'season_year': 'Year'})
 
     # tree view frame
     treeview_frame = ttk.Treeview(frame, height=18, padding=1, show="headings")
