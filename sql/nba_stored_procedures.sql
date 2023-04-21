@@ -475,6 +475,102 @@ BEGIN
 end ;;
 DELIMITER ;
 
+-- fantasy player procedures
+
+drop procedure if EXISTS fantasy_player_search;
+DELIMITER ;;
+CREATE PROCEDURE fantasy_player_search (username_in varchar(50), team_name_in varchar(50))
+BEGIN
+SELECT 
+		player.player, stats.pos, stats.tm
+	FROM
+		nba_app.player_stats as stats
+	JOIN 
+		nba_app.player_table as player
+	ON
+		stats.player_id = player.player_id
+	JOIN 
+		nba_app.season_table as season
+	ON 
+		season.seas_id = stats.seas_id
+	JOIN 
+		nba_app.fantasy_players as fp
+    ON
+		fp.player_id = stats.player_id
+    WHERE
+		fp.username = username_in
+    AND
+		fp.team_name = team_name_in
+	ORDER BY team_name ASC;
+end ;;
+DELIMITER ;
+
+DROP TRIGGER If Exists after_player_add;
+delimiter $$
+CREATE TRIGGER  after_player_add AFTER INSERT ON fantasy_players
+       FOR EACH ROW
+       BEGIN
+			UPDATE nba_app.fantasy_teams 
+			SET 
+				player_count = player_count + 1
+			WHERE
+				fantasy_teams.team_name = NEW.team_name
+                AND 
+                fantasy_teams.username = NEW.username;
+       END;$$
+delimiter ;
+
+
+DROP TRIGGER If Exists after_player_deleted;
+delimiter $$
+CREATE TRIGGER  after_player_deleted AFTER DELETE ON fantasy_players
+       FOR EACH ROW
+       BEGIN
+			UPDATE nba_app.fantasy_teams 
+			SET 
+				player_count = player_count - 1
+			WHERE
+				fantasy_teams.team_name = OLD.team_name
+                AND 
+                fantasy_teams.username = OLD.username;
+       END;$$
+delimiter ;
+
+drop procedure if EXISTS fantasy_players_add;
+DELIMITER ;;
+CREATE PROCEDURE fantasy_players_add (username_in varchar(50), team_name_in varchar(50), player_id_in INT)
+BEGIN
+	INSERT INTO nba_app.fantasy_players (username, team_name, players_id)
+	VALUES (username_in, team_name_in, player_id_in);
+end ;;
+DELIMITER ;
+
+drop procedure if EXISTS player_to_player_id;
+DELIMITER ;;
+CREATE PROCEDURE player_to_player_id (player_in varchar(50))
+BEGIN
+	Select
+		player_id
+	FROM
+		player_table
+	WHERE
+		player_table.player = player_in;
+end ;;
+DELIMITER ;
+
+
+drop procedure if EXISTS fantasy_team_all;
+DELIMITER ;;
+CREATE PROCEDURE fantasy_team_all ()
+BEGIN
+	SELECT 
+		*
+	FROM 
+		fantasy_teams;    
+end ;;
+DELIMITER ;
+
+
 -- end of season teams procedures
 
 drop procedure if EXISTS end_of_season_team_drop_down;

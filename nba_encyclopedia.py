@@ -14,8 +14,10 @@ from windows.team_search import open_team_search
 
 
 def get_user_input():
-    username = input('Enter MySQL Username: ')
-    password = input('Enter MySQL Password: ')
+    # username = input('Enter MySQL Username: ')
+    # password = input('Enter MySQL Password: ')
+    username = "root"
+    password = "cs5200PROJECT!"
 
     return username, password
 

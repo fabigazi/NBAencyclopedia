@@ -109,7 +109,7 @@ DROP TABLE IF EXISTS `fantasy_players`;
 CREATE TABLE `fantasy_players` (
   `username` varchar(20) NOT NULL,
   `team_name` varchar(20) NOT NULL,
-  `players_id` int DEFAULT NULL,
+  `players_id` int NOT NULL,
   PRIMARY KEY (`username`,`team_name`,`players_id`),
   CONSTRAINT FK_Table1_Table2
   FOREIGN KEY(`username`, `team_name`) REFERENCES `fantasy_teams` (`username`, `team_name`) ON DELETE CASCADE ON UPDATE CASCADE

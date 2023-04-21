@@ -122,3 +122,11 @@ CREATE TABLE IF NOT EXISTS fantasy_teams
  FOREIGN KEY (username) REFERENCES user_table(username) ON UPDATE CASCADE ON DELETE CASCADE,
  FOREIGN KEY (players) REFERENCES player_table(player_id) ON UPDATE CASCADE ON DELETE CASCADE
 );
+
+CREATE TABLE fantasy_players (
+  username varchar(20) NOT NULL,
+  team_name varchar(20) NOT NULL,
+  players_id int NOT NULL,
+  PRIMARY KEY (username, team_name, players_id),
+  FOREIGN KEY(username, team_name) REFERENCES fantasy_teams (username, team_name) ON DELETE CASCADE ON UPDATE CASCADE
+)
