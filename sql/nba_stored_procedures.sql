@@ -143,8 +143,6 @@ SELECT
 end ;;
 DELIMITER ;
 
-CALL player_search_pos('PG');
-
 drop procedure if EXISTS player_search_name;
 DELIMITER ;;
 CREATE PROCEDURE player_search_name (name_in varchar(50))
@@ -479,7 +477,7 @@ DELIMITER ;
 
 drop procedure if EXISTS fantasy_player_search;
 DELIMITER ;;
-CREATE PROCEDURE fantasy_player_search (username_in varchar(50), team_name_in varchar(50))
+CREATE PROCEDURE fantasy_player_search (username_in varchar(50), team_name_in varchar(50), season_in int)
 BEGIN
 SELECT 
 		player.player, stats.pos, stats.tm
@@ -496,11 +494,13 @@ SELECT
 	JOIN 
 		nba_app.fantasy_players as fp
     ON
-		fp.players = stats.player_id
+		fp.player_id = stats.player_id
     WHERE
 		fp.username = username_in
     AND
 		fp.team_name = team_name_in
+	AND
+		season.season = season_in
 	ORDER BY team_name ASC;
 end ;;
 DELIMITER ;
@@ -540,12 +540,24 @@ drop procedure if EXISTS fantasy_players_add;
 DELIMITER ;;
 CREATE PROCEDURE fantasy_players_add (username_in varchar(50), team_name_in varchar(50), player_id_in INT)
 BEGIN
-	INSERT INTO nba_app.fantasy_players (username, team_name, players)
+	INSERT INTO nba_app.fantasy_players (username, team_name, player_id)
 	VALUES (username_in, team_name_in, player_id_in);
 end ;;
 DELIMITER ;
 
-CALL fantasy_players_add ('test', 'test', 1);
+drop procedure if EXISTS fantasy_players_delete;
+DELIMITER ;;
+CREATE PROCEDURE fantasy_players_delete (username_in varchar(50), team_name_in varchar(50), player_id_in INT)
+BEGIN
+	DELETE FROM nba_app.fantasy_players 
+WHERE
+    username = username_in
+    AND team_name = team_name_in
+    AND player_id = player_id_in;
+end ;;
+DELIMITER ;
+
+-- CALL fantasy_players_add ('test', 'test', 1);
 
 drop procedure if EXISTS player_to_player_id;
 DELIMITER ;;

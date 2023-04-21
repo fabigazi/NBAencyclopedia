@@ -31,7 +31,7 @@ def allstar_search(cnx, cur, root, window):
         team_drop_down.append(str(row['team']))
 
     # Set window specifications and location
-    window_width = 1100
+    window_width = 900
     window_height = 450
     screen_width = wn.winfo_screenwidth()
     screen_height = wn.winfo_screenheight()

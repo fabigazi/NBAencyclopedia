@@ -27,7 +27,7 @@ def open_add_to_fantasy(username, team_name, cnx, cur, root, window, old_treevie
     team_drop_down = load_team_dd(cur)
 
     # Set window specifications and location
-    window_width = 1300
+    window_width = 1200
     window_height = 450
     screen_width = wn.winfo_screenwidth()
     screen_height = wn.winfo_screenheight()
@@ -124,13 +124,17 @@ def open_add_to_fantasy(username, team_name, cnx, cur, root, window, old_treevie
     label3.grid(row=1, column=0, padx=20, pady=(0, 0))
 
     add = customtkinter.CTkButton(frame_filters2, text="Add Player >",
-                                  command=lambda: [add_player(cur, username, team_name, treeview_search, old_treeview)])
+                                  command=lambda: [add_player(cur, username, team_name, treeview_search,
+                                                              treeview_fantasy, old_treeview), cnx.commit()])
     add.grid(row=2, column=0, padx=20, pady=(0, 10))
 
     delete = customtkinter.CTkButton(frame_filters2, text="Delete Player",
-                                     command=lambda: [delete_player(cur, username,team_name, treeview_fantasy, old_treeview),
-                                                      cnx.commit()])
+                                     command=lambda: [
+                                         delete_player(cur, username, team_name, treeview_fantasy, old_treeview),
+                                         cnx.commit()])
     delete.grid(row=3, column=0, padx=20, pady=(10, 10))
+
+    user_team_select(cur, username, team_name, treeview_fantasy)
 
     frame3.pack(anchor=tk.CENTER)
 
@@ -249,39 +253,43 @@ def user_fantasy_add_update(cur, username, old_treeview):
 
 
 # deletes a player from the team
-def delete_player(cur, username, team_name, treeview, old_treeview):
+def delete_player(cur, username, team_name, treeview_fantasy, old_treeview):
     try:
-        line_selected = treeview.item(treeview.focus())
-        team_name = line_selected['values'][0]
+        line_selected = treeview_fantasy.item(treeview_fantasy.focus())
+        player = line_selected['values'][0]
 
-        cur.execute(f"CALL fantasy_player_delete('{username}','{team_name}')")
-        user_team_select(cur, username, team_name, treeview)
+        cur.execute(f"CALL player_to_player_id('{player}')")
+
+        temp = cur.fetchall()[0]
+        player_id = temp['player_id']
+
+        cur.execute(f"CALL fantasy_players_delete('{username}', '{team_name}', '{player_id}')")
+        user_team_select(cur, username, team_name, treeview_fantasy)
         user_fantasy_add_update(cur, username, old_treeview)
     except:
         messagebox.showerror(title='No Team Selected', message='Please select a team')
 
 
-def add_player(cur, username, team_name, treeview, old_treeview):
-    line_selected = treeview.item(treeview.focus())
-    player = line_selected['values'][0]  # player name
-
-    cur.execute(f"CALL player_to_player_id('{player}')")
-
-    test = cur.fetchall()[0]
-    test = test['player_id']
-
-    cur.execute(f"CALL fantasy_players_add('{username}','{team_name}', '{test}')")
-    user_team_select(cur, username, team_name, treeview)
-    user_fantasy_add_update(cur, username, old_treeview)
+def add_player(cur, username, team_name, treeview_search, treeview_fantasy, old_treeview):
     try:
-        test = 10
+        line_selected = treeview_search.item(treeview_search.focus())
+        player = line_selected['values'][0]  # player name
+
+        cur.execute(f"CALL player_to_player_id('{player}')")
+
+        temp = cur.fetchall()[0]
+        player_id = temp['player_id']
+
+        cur.execute(f"CALL fantasy_players_add('{username}','{team_name}', '{player_id}')")
+        user_team_select(cur, username, team_name, treeview_fantasy)
+        user_fantasy_add_update(cur, username, old_treeview)
     except:
         messagebox.showerror(title='No Player Sel', message='Please select a player')
 
 
 # updates the players treeview table from db
 def user_team_select(cur, username, team_name, treeview):
-    cur.execute(f"CALL fantasy_player_search('{username}', '{team_name}')")
+    cur.execute(f"CALL fantasy_player_search('{username}', '{team_name}', 2023)")
     df = pd.DataFrame({'players': pd.Series(dtype='str'),
                        'position': pd.Series(dtype='str'), 'team': pd.Series(dtype='str')})
 

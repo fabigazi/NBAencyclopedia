@@ -27,7 +27,7 @@ def open_player_search(cnx, cur, root, window):
     team_drop_down = load_team_dd(cur)
 
     # Set window specifications and location
-    window_width = 1100
+    window_width = 900
     window_height = 450
     screen_width = wn.winfo_screenwidth()
     screen_height = wn.winfo_screenheight()
@@ -50,6 +50,11 @@ def open_player_search(cnx, cur, root, window):
     treeview_frame = ttk.Treeview(frame3, height=18, padding=1, show="headings")
     treeview_frame.grid(row=0, column=1, padx=(20, 0), pady=(20, 0), sticky="nsew")
     treeview_frame['columns'] = list(df.columns)
+
+    treeview_frame.column("# 1", stretch=NO, width=150)
+    treeview_frame.column("# 2", stretch=NO, width=150)
+    treeview_frame.column("# 3", stretch=NO, width=150)
+    treeview_frame.column("# 4", stretch=NO, width=150)
 
     # Create heading columns
     for column in df.columns:

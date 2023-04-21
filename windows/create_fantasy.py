@@ -19,7 +19,7 @@ def open_create_fantasy(username, cnx, cur, root, window):
     frame3 = Frame(wn)
 
     # Set window specifications and location
-    window_width = 1100
+    window_width = 700
     window_height = 450
     screen_width = wn.winfo_screenwidth()
     screen_height = wn.winfo_screenheight()
