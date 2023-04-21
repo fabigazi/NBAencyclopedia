@@ -1,6 +1,16 @@
 # NBAencyclopedia
 This is the final project CS 5200 - Database Management Systems by group WebbMO’ConnellJGazianoF. Created by Maya Webb, John O'Connell, Fabian Gaziano
 
+## Project File Structure
+
+* data - csv files used to clean data
+* images - full images of ERD and reverse engineer of DB
+* sql - folder containing all sql files 
+  * nba_app_DUMP_final.sql is the master sql file containing all tables, stored procedures, and triggers
+* windows - contain the 7 different windows we implemented
+* data cleaning files - are some methods we used to clean the data sets
+* nba_encyclopedia.py - the main python file for the project containing the main menu and register
+
 ## Data Sets
 [Kagel](https://www.kaggle.com/datasets/sumitrodatta/nba-aba-baa-stats)
 * all_star_selections
@@ -41,7 +51,8 @@ pip install Django, Pillow, PyMySQL, asgiref, cffi, cryptography, customtkinter,
 
 ## Run Instructions:
 
-    1. put the project in the desired location
-    2. open terminal to the location determined in step one
-    3. run the pip install dependencies as given above.
-    4. run the command: python3 nba_encyclopedia.py
+    1. In my sql workbench exicute the file nba_app_DUMP_final.sql
+    2. put the project in the desired location
+    3. open terminal to the location determined in step one
+    4. run the pip install dependencies as given above.
+    5. run the command: python3 nba_encyclopedia.py
