@@ -496,7 +496,7 @@ SELECT
 	JOIN 
 		nba_app.fantasy_players as fp
     ON
-		fp.player_id = stats.player_id
+		fp.players = stats.player_id
     WHERE
 		fp.username = username_in
     AND
@@ -540,10 +540,12 @@ drop procedure if EXISTS fantasy_players_add;
 DELIMITER ;;
 CREATE PROCEDURE fantasy_players_add (username_in varchar(50), team_name_in varchar(50), player_id_in INT)
 BEGIN
-	INSERT INTO nba_app.fantasy_players (username, team_name, players_id)
+	INSERT INTO nba_app.fantasy_players (username, team_name, players)
 	VALUES (username_in, team_name_in, player_id_in);
 end ;;
 DELIMITER ;
+
+CALL fantasy_players_add ('test', 'test', 1);
 
 drop procedure if EXISTS player_to_player_id;
 DELIMITER ;;
