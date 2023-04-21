@@ -572,7 +572,6 @@ BEGIN
 end ;;
 DELIMITER ;
 
-
 -- end of season teams procedures
 
 drop procedure if EXISTS end_of_season_team_drop_down;
@@ -642,7 +641,74 @@ BEGIN
 end ;;
 DELIMITER ;
 
+-- all star procedures
+drop procedure if EXISTS all_star_drop_down;
+DELIMITER ;;
+CREATE PROCEDURE all_star_drop_down()
+BEGIN
+	SELECT Distinct team FROM nba_app.all_star_selections
+		ORDER BY team ASC;
+end ;;
+DELIMITER ;
 
+drop procedure if EXISTS generic_all_star_search;
+DELIMITER ;;
+CREATE PROCEDURE generic_all_star_search()
+BEGIN
+	SELECT team, player, season
+		FROM all_star_selections
+			JOIN player_table AS pt ON all_star_selections.player_id = pt.player_id
+            JOIN season_table AS st ON all_star_selections.seas_id = st.seas_id
+            
+	ORDER BY season DESC, team;
+end ;;
+DELIMITER ;
+
+drop procedure if EXISTS all_star_search_year;
+DELIMITER ;;
+CREATE PROCEDURE all_star_search_year(season_in INT)
+BEGIN
+	SELECT team, player, season
+		FROM all_star_selections 
+			JOIN player_table AS pt ON all_star_selections.player_id = pt.player_id
+            JOIN season_table AS st ON all_star_selections.seas_id = st.seas_id
+            
+		WHERE season = season_in
+            
+	ORDER BY team;
+
+end ;;
+DELIMITER ;
+
+drop procedure if EXISTS all_star_search_team;
+DELIMITER ;;
+CREATE PROCEDURE all_star_search_team(team_in VARCHAR(50))
+BEGIN
+	SELECT team, player, season
+		FROM all_star_selections
+			JOIN player_table AS pt ON all_star_selections.player_id = pt.player_id
+            JOIN season_table AS st ON all_star_selections.seas_id = st.seas_id
+            
+		WHERE team = team_in
+            
+	ORDER BY season DESC;
+end ;;
+DELIMITER ;
+
+drop procedure if EXISTS all_star_search_year_team;
+DELIMITER ;;
+CREATE PROCEDURE all_star_search_year_team(season_in INT, team_in VARCHAR(50))
+BEGIN
+	SELECT team, player, season
+		FROM all_star_selections
+			JOIN player_table AS pt ON all_star_selections.player_id = pt.player_id
+            JOIN season_table AS st ON all_star_selections.seas_id = st.seas_id
+            
+		WHERE season = season_in AND team = team_in
+            
+	ORDER BY player;
+end ;;
+DELIMITER ;
 
     
     
