@@ -13,6 +13,12 @@ from windows.player_search import open_player_search
 from windows.team_search import open_team_search
 
 
+def get_user_input():
+    username = input('Enter MySQL Username: ')
+    password = input('Enter MySQL Password: ')
+
+    return username, password
+
 def username_exists(cur, username):
     cur.execute(f"SELECT * FROM user_table WHERE username = '{username}'")
     if cur.fetchall():
@@ -51,13 +57,13 @@ def main_menu(cnx, cur, root, username):
                              command=lambda: [wn.destroy(), root.deiconify()])
     btn1 = ctk.CTkButton(frame2, text='View / Search Players', font=('Arial', 14),
                          command=lambda: [open_player_search(cnx, cur, root, wn)])
-    btn2 = ctk.CTkButton(frame2, text='View / Search Teams', font=('Arial', 14),
+    btn2 = ctk.CTkButton(frame2, text='View / Search End of Season Teams', font=('Arial', 14),
                          command=lambda: [open_team_search(cnx, cur, root, wn)])
     btn3 = ctk.CTkButton(frame2, text='View / Search All Star Teams', font=('Arial', 14),
                          command=lambda: [allstar_search(cnx, cur, root, wn)])
     btn4 = ctk.CTkButton(frame2, text='View / Search Fantasy Teams', font=('Arial', 14),
                          command=lambda: [fantasy_search(cnx, cur, root, wn)])
-    btn5 = ctk.CTkButton(frame2, text='Create a Team', font=('Arial', 14),
+    btn5 = ctk.CTkButton(frame2, text='Create / Edit Fantasy Teams', font=('Arial', 14),
                          command=lambda: [open_create_fantasy(username, cnx, cur, root, wn)])
 
     # Placing widgets on the screen
@@ -205,10 +211,14 @@ def start_screen(cnx, cur, root):
 
 
 def main():
+
+    # get mySQL username and password from user
+    username, password = get_user_input()
+
     # connect to database using pymysql
     cnx = pymysql.connect(host='localhost',
-                          user='root',
-                          password='cs5200PROJECT!',
+                          user=username,
+                          password=password,
                           db='nba_app',
                           charset='utf8mb4',
                           cursorclass=pymysql.cursors.DictCursor)

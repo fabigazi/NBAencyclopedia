@@ -475,6 +475,75 @@ BEGIN
 end ;;
 DELIMITER ;
 
+-- end of season teams procedures
+
+drop procedure if EXISTS end_of_season_team_drop_down;
+DELIMITER ;;
+CREATE PROCEDURE end_of_season_team_drop_down ()
+BEGIN
+	SELECT Distinct type FROM nba_app.end_of_season_teams
+		ORDER BY type ASC;
+end ;;
+DELIMITER ;
+
+drop procedure if EXISTS generic_eos_search;
+DELIMITER ;;
+CREATE PROCEDURE generic_eos_search()
+BEGIN
+	SELECT type, player, season
+		FROM end_of_season_teams AS eos
+			JOIN player_table AS pt ON eos.player_id = pt.player_id
+            JOIN season_table AS st ON eos.seas_id = st.seas_id
+            
+	ORDER BY season DESC, type;
+end ;;
+DELIMITER ;
+
+drop procedure if EXISTS eos_search_year;
+DELIMITER ;;
+CREATE PROCEDURE eos_search_year(season_in INT)
+BEGIN
+	SELECT type, player, season
+		FROM end_of_season_teams AS eos
+			JOIN player_table AS pt ON eos.player_id = pt.player_id
+            JOIN season_table AS st ON eos.seas_id = st.seas_id
+            
+		WHERE season = season_in
+            
+	ORDER BY type;
+end ;;
+DELIMITER ;
+
+drop procedure if EXISTS eos_search_team;
+DELIMITER ;;
+CREATE PROCEDURE eos_search_team(team_in VARCHAR(50))
+BEGIN
+	SELECT type, player, season
+		FROM end_of_season_teams AS eos
+			JOIN player_table AS pt ON eos.player_id = pt.player_id
+            JOIN season_table AS st ON eos.seas_id = st.seas_id
+            
+		WHERE type = team_in
+            
+	ORDER BY season DESC;
+end ;;
+DELIMITER ;
+
+drop procedure if EXISTS eos_search_year_team;
+DELIMITER ;;
+CREATE PROCEDURE eos_search_year_team(season_in INT, team_in VARCHAR(50))
+BEGIN
+	SELECT type, player, season
+		FROM end_of_season_teams AS eos
+			JOIN player_table AS pt ON eos.player_id = pt.player_id
+            JOIN season_table AS st ON eos.seas_id = st.seas_id
+            
+		WHERE season = season_in AND type = team_in
+            
+	ORDER BY player;
+end ;;
+DELIMITER ;
+
 
 
     

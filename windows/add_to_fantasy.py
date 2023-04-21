@@ -102,10 +102,10 @@ def open_add_to_fantasy(username, team_name, cnx, cur, root, window, treeview):
                                                                         team_name_entry.get(), treeview_search)])
     search_button.grid(row=5, column=0, padx=20, pady=(10, 10))
 
-    #add = customtkinter.CTkButton(frame_filters, text="Add",
-                             #      command=lambda: [wn.destroy(), window.deiconify(),
-                                             #       user_fantasy_search(cur, username, treeview)])
-    #add.grid(row=6, column=0, padx=20, pady=(10, 10))
+    add = customtkinter.CTkButton(frame_filters, text="Add",
+                                   command=lambda: [wn.destroy(), window.deiconify()])
+                                                    #user_fantasy_search(cur, username, treeview)])
+    add.grid(row=6, column=0, padx=20, pady=(10, 10))
 
     back = customtkinter.CTkButton(frame_filters, text="Back",
                                    command=lambda: [wn.destroy(), window.deiconify()])
